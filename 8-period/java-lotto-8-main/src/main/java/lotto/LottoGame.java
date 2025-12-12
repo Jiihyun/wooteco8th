@@ -11,14 +11,15 @@ import lotto.domain.LottoStore;
 import lotto.domain.Rank;
 import lotto.domain.RankStatistics;
 import lotto.domain.WinningLotto;
+import lotto.util.RetryHandler;
 import lotto.view.InputView;
 import lotto.view.OutputView;
 
 public class LottoGame {
 
     public void run() {
-        List<Lotto> lottos = purchaseLotto();
-        WinningLotto winningLotto = readWinningLotto();
+        List<Lotto> lottos = RetryHandler.retryOnInvalidInput(this::purchaseLotto);
+        WinningLotto winningLotto = RetryHandler.retryOnInvalidInput(this::readWinningLotto);
         RankStatistics rankStatistics = calculateRankStatistics(lottos, winningLotto);
         double earningRate = calculateEarningRate(rankStatistics, lottos);
         OutputView.showStatistics(rankStatistics, earningRate);
@@ -32,13 +33,13 @@ public class LottoGame {
         return lottos;
     }
 
-    private static WinningLotto readWinningLotto() {
-        List<Integer> winningNumbers = InputView.readWinningNumbers();
+    private WinningLotto readWinningLotto() {
+        List<Integer> winningNumbers = RetryHandler.retryOnInvalidInput(InputView::readWinningNumbers);
         int bonusNumber = InputView.readBonusNumber();
         return new WinningLotto(new Lotto(winningNumbers), new LottoNumber(bonusNumber));
     }
 
-    private static RankStatistics calculateRankStatistics(List<Lotto> lottos, WinningLotto winningLotto) {
+    private RankStatistics calculateRankStatistics(List<Lotto> lottos, WinningLotto winningLotto) {
         RankStatistics rankStatistics = new RankStatistics();
         for (Lotto purchasedLotto : lottos) {
             int matchingCount = winningLotto.calculateMatchingCount(purchasedLotto);
@@ -48,7 +49,7 @@ public class LottoGame {
         return rankStatistics;
     }
 
-    private static double calculateEarningRate(RankStatistics rankStatistics, List<Lotto> lottos) {
+    private double calculateEarningRate(RankStatistics rankStatistics, List<Lotto> lottos) {
         EarningRateCalculator earningRateCalculator = new EarningRateCalculator(rankStatistics);
         return earningRateCalculator.calculateEarningRate(lottos.size() * LOTTO_PRICE_UNIT);
     }
