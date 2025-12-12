@@ -14,5 +14,6 @@ public class LottoGame {
         LottoStore lottoStore = new LottoStore(new LottoNumberGenerator());
         List<Lotto> lottos = lottoStore.sell(purchasedAmount);
         OutputView.showLottos(lottos);
+        List<Integer> winningNumbers = InputView.readWinningNumbers();
     }
 }
