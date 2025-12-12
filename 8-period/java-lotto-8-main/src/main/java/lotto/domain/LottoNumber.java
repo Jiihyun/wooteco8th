@@ -27,4 +27,18 @@ public class LottoNumber {
     public int getValue() {
         return value;
     }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof LottoNumber that)) {
+            return false;
+        }
+
+        return getValue() == that.getValue();
+    }
+
+    @Override
+    public int hashCode() {
+        return getValue();
+    }
 }

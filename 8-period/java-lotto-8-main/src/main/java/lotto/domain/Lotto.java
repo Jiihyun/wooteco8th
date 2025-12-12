@@ -39,6 +39,17 @@ public class Lotto {
                 .count() != numbers.size();
     }
 
+    public int calculateMatchingCount(Lotto other) {
+        return (int) this.numbers.stream()
+                .filter(other::hasSameNumber)
+                .count();
+    }
+
+    public boolean hasSameNumber(LottoNumber lottoNumber) {
+        return this.numbers
+                .contains(lottoNumber);
+    }
+
     public List<LottoNumber> getNumbers() {
         return numbers;
     }
