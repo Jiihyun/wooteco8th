@@ -6,7 +6,7 @@ import lotto.exception.ExceptionMessage;
 
 public class LottoStore {
 
-    private static final int LOTTO_PRICE_UNIT = 1_000;
+    public static final int LOTTO_PRICE_UNIT = 1_000;
 
     private LottoNumberGenerator lottoNumberGenerator;
 
