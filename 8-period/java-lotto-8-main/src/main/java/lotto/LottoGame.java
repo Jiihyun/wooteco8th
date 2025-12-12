@@ -15,5 +15,6 @@ public class LottoGame {
         List<Lotto> lottos = lottoStore.sell(purchasedAmount);
         OutputView.showLottos(lottos);
         List<Integer> winningNumbers = InputView.readWinningNumbers();
+        int bonusNumber = InputView.readBonusNumber();
     }
 }
