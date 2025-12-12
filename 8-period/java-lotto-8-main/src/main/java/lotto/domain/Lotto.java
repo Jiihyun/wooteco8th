@@ -38,4 +38,8 @@ public class Lotto {
                 .distinct()
                 .count() != numbers.size();
     }
+
+    public List<LottoNumber> getNumbers() {
+        return numbers;
+    }
 }

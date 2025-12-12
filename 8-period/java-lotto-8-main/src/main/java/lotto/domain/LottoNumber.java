@@ -24,4 +24,7 @@ public class LottoNumber {
         return number < MIN_NUMBER || number > MAX_RANGE;
     }
 
+    public int getValue() {
+        return value;
+    }
 }
