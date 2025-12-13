@@ -3,6 +3,7 @@ package lotto.view;
 import java.util.List;
 import lotto.domain.Lotto;
 import lotto.domain.LottoNumber;
+import lotto.domain.Rank;
 import lotto.domain.RankStatistics;
 
 public class OutputView {
@@ -24,11 +25,11 @@ public class OutputView {
 
     public static void showStatistics(RankStatistics rankStatistics, double earningRate) {
         System.out.println("당첨 통계" + NEW_LINE + "---");
-        RankFormatter.orderRanks()
-                .forEach(rank -> {
-                    String statistics = RankFormatter.formatRank(rank, rankStatistics.getMatchingCountByRank(rank));
-                    System.out.println(statistics);
-                });
+        List<Rank> ranks = List.of(Rank.FIFTH, Rank.FOURTH, Rank.THIRD, Rank.SECOND, Rank.FIRST);
+        ranks.forEach(rank -> {
+            String statistics = RankFormatter.formatRank(rank, rankStatistics.getMatchingCountByRank(rank));
+            System.out.println(statistics);
+        });
         System.out.println("총 수익률은 %,.1f%%입니다.".formatted(earningRate));
     }
 
