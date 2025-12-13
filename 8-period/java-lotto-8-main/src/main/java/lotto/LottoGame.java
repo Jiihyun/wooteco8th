@@ -18,7 +18,7 @@ public class LottoGame {
 
     public void run() {
         List<Lotto> lottos = RetryHandler.retryOnInvalidInput(this::purchaseLotto);
-        WinningLotto winningLotto = RetryHandler.retryOnInvalidInput(this::readWinningLotto);
+        WinningLotto winningLotto = readWinningLotto();
         RankStatistics rankStatistics = calculateRankStatistics(lottos, winningLotto);
         double earningRate = calculateEarningRate(rankStatistics, lottos);
         OutputView.showStatistics(rankStatistics, earningRate);
@@ -33,9 +33,9 @@ public class LottoGame {
     }
 
     private WinningLotto readWinningLotto() {
-        List<Integer> winningNumbers = RetryHandler.retryOnInvalidInput(InputView::readWinningNumbers);
-        int bonusNumber = InputView.readBonusNumber();
-        return new WinningLotto(new Lotto(winningNumbers), new LottoNumber(bonusNumber));
+        Lotto winningNumbers = RetryHandler.retryOnInvalidInput(() -> new Lotto(InputView.readWinningNumbers()));
+        return RetryHandler.retryOnInvalidInput(()
+                -> new WinningLotto(winningNumbers, new LottoNumber(InputView.readBonusNumber())));
     }
 
     private RankStatistics calculateRankStatistics(List<Lotto> lottos, WinningLotto winningLotto) {
