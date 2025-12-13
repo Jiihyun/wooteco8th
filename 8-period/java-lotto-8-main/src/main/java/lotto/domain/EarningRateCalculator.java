@@ -14,7 +14,7 @@ public class EarningRateCalculator {
     public double calculateEarningRate(int purchasedAmount) {
         double prizeAmount = 0;
         for (Map.Entry<Rank, Integer> entry : rankStatistics.getStatistics().entrySet()) {
-            prizeAmount += entry.getKey().getPrizeAmount() * entry.getValue();
+            prizeAmount += (double) entry.getKey().getPrizeAmount() * entry.getValue();
         }
         return prizeAmount / purchasedAmount * PERCENTAGE;
     }
