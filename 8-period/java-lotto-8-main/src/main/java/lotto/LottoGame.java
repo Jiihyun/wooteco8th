@@ -8,7 +8,6 @@ import lotto.domain.Lotto;
 import lotto.domain.LottoNumber;
 import lotto.domain.LottoNumberGenerator;
 import lotto.domain.LottoStore;
-import lotto.domain.Rank;
 import lotto.domain.RankStatistics;
 import lotto.domain.WinningLotto;
 import lotto.util.RetryHandler;
@@ -41,11 +40,7 @@ public class LottoGame {
 
     private RankStatistics calculateRankStatistics(List<Lotto> lottos, WinningLotto winningLotto) {
         RankStatistics rankStatistics = new RankStatistics();
-        for (Lotto purchasedLotto : lottos) {
-            int matchingCount = winningLotto.calculateMatchingCount(purchasedLotto);
-            boolean hasBonusNumber = winningLotto.checkBonusNumberBy(purchasedLotto);
-            rankStatistics.put(Rank.findRank(matchingCount, hasBonusNumber));
-        }
+        rankStatistics.calculate(winningLotto, lottos);
         return rankStatistics;
     }
 
