@@ -1,5 +1,6 @@
 package vendingmachine.domain;
 
+import java.util.Objects;
 import vendingmachine.exception.ExceptionMessage;
 
 public class Product {
@@ -22,5 +23,27 @@ public class Product {
         if (price % Coin.COIN_10.getAmount() != 0) {
             throw new IllegalArgumentException(ExceptionMessage.INVALID_PRODUCT_PRICE.getMessage());
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof Product product)) {
+            return false;
+        }
+
+        return Objects.equals(getName(), product.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getName());
     }
 }

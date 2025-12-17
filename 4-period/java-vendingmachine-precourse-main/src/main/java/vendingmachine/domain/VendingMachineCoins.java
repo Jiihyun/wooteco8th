@@ -51,6 +51,15 @@ public class VendingMachineCoins {
         }
     }
 
+    public void deduct(int userMoney) {
+        //FIX: 로직 수정
+        while (userMoney > 0) {
+            for (Map.Entry<Coin, Integer> entry : coins.entrySet()) {
+                userMoney -= (entry.getKey().getAmount() * entry.getValue());
+            }
+        }
+    }
+
     public Map<Coin, Integer> getCoins() {
         return coins;
     }
