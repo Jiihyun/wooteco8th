@@ -9,7 +9,7 @@ public class Order {
     private static final int MIN_QUANTITY = 1;
 
     private final Product product;
-    private final int purchasedQuantity;
+    private int purchasedQuantity;
     private final LocalDate orderDate;
 
     public Order(String productName, int purchasedQuantity, Products products) {
@@ -114,5 +114,9 @@ public class Order {
 
     public int getPromotionGetQuantity() {
         return product.getPromotionGetQuantity();
+    }
+
+    public void minusPurchasedQuantity(int insufficientQuantity) {
+        this.purchasedQuantity -= insufficientQuantity;
     }
 }

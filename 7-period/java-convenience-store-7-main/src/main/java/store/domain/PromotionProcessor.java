@@ -9,8 +9,9 @@ public class PromotionProcessor {
 
     public SingleOrderResult process(OrderDecisionRequest request, Order order) {
         int manualFreeQuantity = calculateManualFreeQuantity(order, request);
+        int autoFreeQuantity = order.calculateFreeProductQuantity();
         minusStock(request, order, manualFreeQuantity);
-        return createOrderProcessResult(order, manualFreeQuantity);
+        return createOrderProcessResult(order, manualFreeQuantity, autoFreeQuantity);
     }
 
     private int calculateManualFreeQuantity(Order order, OrderDecisionRequest request) {
@@ -26,15 +27,11 @@ public class PromotionProcessor {
     private void minusStock(OrderDecisionRequest request, Order order, int manualFreeQuantity) {
         Inventory inventory = order.getProductInventory();
         int purchasedQuantity = order.getPurchasedQuantity();
-        if (manualFreeQuantity > 0) {
-            inventory.minusPromotionQuantity(purchasedQuantity + manualFreeQuantity);
-            return;
-        }
         if (inventory.hasInsufficientPromotionQuantity(purchasedQuantity)) {
             handleInsufficientPromotion(request, order, inventory);
             return;
         }
-        inventory.minusPromotionQuantity(purchasedQuantity);
+        inventory.minusPromotionQuantity(purchasedQuantity + manualFreeQuantity);
     }
 
     private void handleInsufficientPromotion(OrderDecisionRequest request, Order order, Inventory inventory) {
@@ -46,21 +43,22 @@ public class PromotionProcessor {
             return;
         }
         inventory.minusPromotionQuantity(purchasedQuantity - insufficientQuantity);
+        order.minusPurchasedQuantity(insufficientQuantity);
     }
 
-    private SingleOrderResult createOrderProcessResult(Order order, int manualFreeQuantity) {
-        FreeProductResult freeProductResult = createFreeProductResult(order, manualFreeQuantity);
+    private SingleOrderResult createOrderProcessResult(Order order, int manualFreeQuantity, int autoFreeQuantity) {
+        FreeProductResult freeProductResult = createFreeProductResult(order, manualFreeQuantity, autoFreeQuantity);
         PurchasedProductResult purchasedProductResult = createPurchasedProductResult(order, freeProductResult);
-
-        if (freeProductResult.totalQuantity() == 0) {
-            int sumOfNonPromotionAmount = order.getPurchasedQuantity() * order.getProductPrice();
-            return SingleOrderResult.createWithoutFreeProduct(purchasedProductResult, sumOfNonPromotionAmount);
+        int nonPromotionQuantity = freeProductResult.totalQuantity()
+                * (order.getPromotionBuyQuantity() + order.getPromotionGetQuantity());
+        if (nonPromotionQuantity < order.getPurchasedQuantity()) {
+            int sumOfNonPromotionAmount = (order.getPurchasedQuantity() - nonPromotionQuantity) * order.getProductPrice();
+            return new SingleOrderResult(purchasedProductResult, freeProductResult, sumOfNonPromotionAmount);
         }
         return new SingleOrderResult(purchasedProductResult, freeProductResult, 0);
     }
 
-    private FreeProductResult createFreeProductResult(Order order, int manualFreeQuantity) {
-        int autoFreeQuantity = order.calculateFreeProductQuantity();
+    private FreeProductResult createFreeProductResult(Order order, int manualFreeQuantity, int autoFreeQuantity) {
         return FreeProductResult.from(order.getProduct(), autoFreeQuantity, manualFreeQuantity);
     }
 
