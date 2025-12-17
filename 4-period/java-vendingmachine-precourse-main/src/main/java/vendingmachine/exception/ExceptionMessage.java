@@ -3,10 +3,10 @@ package vendingmachine.exception;
 public enum ExceptionMessage {
 
     INPUT_BLANK("빈 값을 입력하셨습니다."),
-
     INVALID_NUMBER("유효하지 않은 숫자입니다."),
-
     INVALID_FORMAT("유효하지 않은 포맷입니다."),
+    INVALID_VENDING_MACHINE_MONEY("유효하지 않은 동전 범위입니다."),
+    INVALID_COIN("유효하지 않은 동전 금액 입니다."),
     ;
 
     private static final String ERROR_PREFIX = "[ERROR] ";
