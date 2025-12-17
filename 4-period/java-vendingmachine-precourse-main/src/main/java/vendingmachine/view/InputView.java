@@ -53,6 +53,11 @@ public final class InputView {
         return Parser.parseToInt(input);
     }
 
+    public static String readPurchaseProduct(int userMoney) {
+        System.out.println("투입 금액: %d원".formatted(userMoney));
+        System.out.println("구매할 상품명을 입력해 주세요.");
+        return readLine();
+    }
 
     private static String readLine() {
         String input = Console.readLine().strip();
