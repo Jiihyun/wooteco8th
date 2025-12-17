@@ -47,6 +47,13 @@ public final class InputView {
         }
     }
 
+    public static int readUserMoney() {
+        System.out.println("투입 금액을 입력해 주세요.");
+        String input = readLine();
+        return Parser.parseToInt(input);
+    }
+
+
     private static String readLine() {
         String input = Console.readLine().strip();
         validateInput(input);
