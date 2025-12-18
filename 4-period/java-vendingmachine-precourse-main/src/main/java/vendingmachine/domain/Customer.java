@@ -8,11 +8,7 @@ public class Customer {
         this.userMoney = userMoney;
     }
 
-    public void purchase(Product product) {
-        userMoney -= product.getPrice();
-    }
-
-    public int getUserMoney() {
-        return userMoney;
+    public int purchase(Product product) {
+        return userMoney -= product.getPrice();
     }
 }

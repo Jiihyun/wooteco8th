@@ -2,6 +2,7 @@ package vendingmachine.domain;
 
 import camp.nextstep.edu.missionutils.Randoms;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import vendingmachine.exception.ExceptionMessage;
 
@@ -51,13 +52,23 @@ public class VendingMachineCoins {
         }
     }
 
-    public void deduct(int userMoney) {
-        //FIX: 로직 수정
-        while (userMoney > 0) {
-            for (Map.Entry<Coin, Integer> entry : coins.entrySet()) {
-                userMoney -= (entry.getKey().getAmount() * entry.getValue());
+    public Map<Coin, Integer> calculateChanges(int userMoney) {
+        Map<Coin, Integer> changes = new HashMap<>();
+        for (Map.Entry<Coin, Integer> entry : coins.entrySet()) {
+            userMoney = putChanges(userMoney, entry, changes);
+        }
+        return changes;
+    }
+
+    private int putChanges(int userMoney, Map.Entry<Coin, Integer> entry, Map<Coin, Integer> changes) {
+        for (int quantity = 0; quantity < entry.getValue(); quantity++) {
+            int amount = entry.getKey().getAmount();
+            if (userMoney >= amount) {
+                userMoney -= amount;
+                changes.put(entry.getKey(), changes.getOrDefault(entry.getKey(), 0) + 1);
             }
         }
+        return userMoney;
     }
 
     public Map<Coin, Integer> getCoins() {
