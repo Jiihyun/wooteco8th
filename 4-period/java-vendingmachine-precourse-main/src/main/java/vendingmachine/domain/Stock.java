@@ -12,8 +12,15 @@ public class Stock {
     }
 
     public void put(Product product, int quantity) {
-        //TODO: 동일한 상품 검증 추가
+        if (hasSameProduct(product)) {
+            throw new IllegalArgumentException(ExceptionMessage.DUPLICATED_PRODUCT.getMessage());
+        }
         stock.put(product, quantity);
+    }
+
+    private boolean hasSameProduct(Product product) {
+        return stock.keySet().stream()
+                .anyMatch(stock -> stock.getName().equals(product.getName()));
     }
 
     public Product findProduct(String name) {
@@ -38,9 +45,5 @@ public class Stock {
             min = Math.min(min, entry.getKey().getPrice());
         }
         return min;
-    }
-
-    public Map<Product, Integer> getStock() {
-        return stock;
     }
 }
