@@ -40,16 +40,20 @@ public class VendingMachine {
     }
 
     private int purchase(Stock stock) {
-        int userMoney = RetryHandler.retryOnInvalidInput(InputView::readUserMoney);
-        Customer customer = new Customer(userMoney);
+        Customer customer = RetryHandler.retryOnInvalidInput(this::createCustomer);
 
-        while (canPurchase(stock, userMoney)) {
-            int finalUserMoney = userMoney;
+        while (canPurchase(stock, customer.getUserMoney())) {
+            int finalUserMoney = customer.getUserMoney();
             Product product = RetryHandler.retryOnInvalidInput(() -> pickProduct(stock, finalUserMoney));
-            userMoney = customer.purchase(product);
+            customer.purchase(product);
             stock.deductStock(product);
         }
-        return userMoney;
+        return customer.getUserMoney();
+    }
+
+    private Customer createCustomer() {
+        int userMoney = InputView.readUserMoney();
+        return new Customer(userMoney);
     }
 
     private boolean canPurchase(Stock stock, int userMoney) {
