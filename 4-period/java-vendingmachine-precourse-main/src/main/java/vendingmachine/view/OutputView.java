@@ -19,13 +19,17 @@ public final class OutputView {
         );
     }
 
-    public static void showResult(int userMoney, VendingMachineCoins vendingMachineCoins) {
+    public static void showResult(int userMoney, Map<Coin, Integer> changes) {
         System.out.println("투입 금액: %d원".formatted(userMoney));
         System.out.println("잔돈");
-        for (Map.Entry<Coin, Integer> entry : vendingMachineCoins.getCoins().entrySet()) {
+        for (Map.Entry<Coin, Integer> entry : changes.entrySet()) {
             if (entry.getValue() > 0) {
                 System.out.println(VENDINGMACHINE_COINS_FORMAT.formatted(entry.getKey().getAmount(), entry.getValue()));
             }
         }
+    }
+
+    public static void showError(String message) {
+        System.out.println(message);
     }
 }
