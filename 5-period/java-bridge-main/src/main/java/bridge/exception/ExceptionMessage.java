@@ -7,6 +7,7 @@ public enum ExceptionMessage {
     INVALID_FORMAT("유효하지 않은 형식입니다."),
     INVALID_RANGE("유효하지 않은 범위입니다."),
     MOVING_COMMAND_NOT_EXISTS("존재하지 않는 이동 명령어 입니다."),
+    RETRY_COMMAND_NOT_EXISTS("존재하지 않는 재시도 명령어 입니다."),
     DUPLICATED("중복된 oo입니다."),
     ;
 
