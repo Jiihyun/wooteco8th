@@ -69,6 +69,22 @@ public final class OutputView {
      * <p>
      * 출력을 위해 필요한 메서드의 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
-    public static void printResult() {
+    public static void printResult(BridgeGame bridgeGame) {
+        System.out.println("\n최종 게임 결과");
+        printMap(bridgeGame);
+        printIsSuccess(bridgeGame);
+        System.out.println("총 시도한 횟수: %d".formatted(bridgeGame.getTryCount()));
+    }
+
+    private static void printIsSuccess(BridgeGame bridgeGame) {
+        List<String> bridge = bridgeGame.getBridge();
+        List<String> userBridge = bridgeGame.getUserBridge();
+        for (int i = 0; i < userBridge.size(); i++) {
+            String answer = userBridge.get(i);
+            if (!answer.equals(bridge.get(i))) {
+                System.out.println("\n게임 성공 여부: 실패");
+            }
+        }
+        System.out.println("\n게임 성공 여부: 성공");
     }
 }

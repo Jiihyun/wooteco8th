@@ -20,4 +20,8 @@ public enum RetryCommand {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.RETRY_COMMAND_NOT_EXISTS.getMessage()));
     }
+
+    public boolean wantQuit() {
+        return this == Q;
+    }
 }
