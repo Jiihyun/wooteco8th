@@ -14,18 +14,8 @@ public class BridgeController {
 
     public void run() {
         List<String> bridge = RetryHandler.retryOnInvalidInput(this::makeBridge);
-
         BridgeGame bridgeGame = new BridgeGame(bridge);
         move(bridgeGame);
-        if (!bridgeGame.isSuccess()) {
-            RetryCommand retryCommand = RetryHandler.retryOnInvalidInput(InputView::readGameCommand);
-            if (retryCommand.wantQuit()) {
-                OutputView.printResult(bridgeGame);
-                return;
-            }
-            bridgeGame.retry();
-            move(bridgeGame);
-        }
         OutputView.printResult(bridgeGame);
     }
 
@@ -40,6 +30,20 @@ public class BridgeController {
             MovingCommand movingCommand = RetryHandler.retryOnInvalidInput(InputView::readMoving);
             bridgeGame.move(movingCommand);
             OutputView.printMap(bridgeGame);
+            if (wantQuit(bridgeGame)) {
+                break;
+            }
         }
+    }
+
+    private boolean wantQuit(BridgeGame bridgeGame) {
+        if (bridgeGame.isFailed()) {
+            RetryCommand retryCommand = RetryHandler.retryOnInvalidInput(InputView::readGameCommand);
+            if (retryCommand.wantQuit()) {
+                return true;
+            }
+            bridgeGame.retry();
+        }
+        return false;
     }
 }

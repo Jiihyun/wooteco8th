@@ -20,13 +20,12 @@ public class BridgeGame {
     }
 
     public boolean keepGame() {
-        return userBridge.size() < bridge.size()
-                && isSuccess();
+        return userBridge.size() < bridge.size();
     }
 
-    public boolean isSuccess() {
+    public boolean isFailed() {
         return IntStream.range(0, userBridge.size())
-                .allMatch(i -> userBridge.get(i).equals(bridge.get(i)));
+                .anyMatch(i -> !userBridge.get(i).equals(bridge.get(i)));
     }
 
     /**

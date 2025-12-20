@@ -83,6 +83,7 @@ public final class OutputView {
             String answer = userBridge.get(i);
             if (!answer.equals(bridge.get(i))) {
                 System.out.println("\n게임 성공 여부: 실패");
+                return;
             }
         }
         System.out.println("\n게임 성공 여부: 성공");
