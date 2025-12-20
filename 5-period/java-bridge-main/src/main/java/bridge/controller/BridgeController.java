@@ -5,6 +5,7 @@ import bridge.domain.BridgeMaker;
 import bridge.domain.BridgeRandomNumberGenerator;
 import bridge.domain.MovingCommand;
 import bridge.domain.RetryCommand;
+import bridge.util.RetryHandler;
 import bridge.view.InputView;
 import bridge.view.OutputView;
 import java.util.List;
@@ -12,12 +13,12 @@ import java.util.List;
 public class BridgeController {
 
     public void run() {
-        List<String> bridge = makeBridge();
+        List<String> bridge = RetryHandler.retryOnInvalidInput(this::makeBridge);
 
         BridgeGame bridgeGame = new BridgeGame(bridge);
         move(bridgeGame);
         if (!bridgeGame.isSuccess()) {
-            RetryCommand retryCommand = InputView.readGameCommand();
+            RetryCommand retryCommand = RetryHandler.retryOnInvalidInput(InputView::readGameCommand);
             if (retryCommand.wantQuit()) {
                 OutputView.printResult(bridgeGame);
                 return;
@@ -36,7 +37,7 @@ public class BridgeController {
 
     private void move(BridgeGame bridgeGame) {
         while (bridgeGame.keepGame()) {
-            MovingCommand movingCommand = InputView.readMoving();
+            MovingCommand movingCommand = RetryHandler.retryOnInvalidInput(InputView::readMoving);
             bridgeGame.move(movingCommand);
             OutputView.printMap(bridgeGame);
         }

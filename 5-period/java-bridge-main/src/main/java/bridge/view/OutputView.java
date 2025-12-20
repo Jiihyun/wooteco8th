@@ -87,4 +87,8 @@ public final class OutputView {
         }
         System.out.println("\n게임 성공 여부: 성공");
     }
+
+    public static void showError(String message) {
+        System.out.println(message);
+    }
 }
