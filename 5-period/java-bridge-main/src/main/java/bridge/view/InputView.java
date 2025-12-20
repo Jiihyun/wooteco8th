@@ -30,7 +30,7 @@ public final class InputView {
     /**
      * 사용자가 이동할 칸을 입력받는다.
      */
-    public MovingCommand readMoving() {
+    public static MovingCommand readMoving() {
         System.out.println(NEW_LINE + "이동할 칸을 선택해주세요. (위: U, 아래: D)");
         return MovingCommand.from(readLine());
     }
@@ -38,7 +38,7 @@ public final class InputView {
     /**
      * 사용자가 게임을 다시 시도할지 종료할지 여부를 입력받는다.
      */
-    public RetryCommand readGameCommand() {
+    public static RetryCommand readGameCommand() {
         System.out.println(NEW_LINE + "게임을 다시 시도할지 여부를 입력해주세요. (재시도: R, 종료: Q)");
         return RetryCommand.from(readLine());
     }
