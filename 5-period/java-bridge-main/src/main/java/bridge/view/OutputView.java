@@ -10,6 +10,10 @@ import java.util.List;
  */
 public final class OutputView {
 
+    private static final String NEW_LINE = System.lineSeparator();
+    private static final String BRIDGE_DELIMITER = " | ";
+    private static final String MAP_FORMAT = "[ %s ]";
+
     private OutputView() {
     }
 
@@ -21,23 +25,21 @@ public final class OutputView {
     public static void printMap(BridgeGame bridgeGame) {
         List<String> up = new ArrayList<>();
         List<String> down = new ArrayList<>();
+        judgeAnswer(bridgeGame, up, down);
 
-        List<String> bridge = bridgeGame.getBridge();
-        List<String> userBridge = bridgeGame.getUserBridge();
-        judgeAnswer(userBridge, bridge, up, down);
-
-        System.out.println("[ " + String.join(" | ", up) + " ]");
-        System.out.println("[ " + String.join(" | ", down) + " ]");
+        System.out.println(MAP_FORMAT.formatted(String.join(BRIDGE_DELIMITER, up)));
+        System.out.println(MAP_FORMAT.formatted(String.join(BRIDGE_DELIMITER, down)));
     }
 
-    private static void judgeAnswer(List<String> userBridge, List<String> bridge, List<String> up, List<String> down) {
+    private static void judgeAnswer(BridgeGame bridgeGame, List<String> up, List<String> down) {
+        List<String> userBridge = bridgeGame.getUserBridge();
+
         for (int i = 0; i < userBridge.size(); i++) {
-            String answer = userBridge.get(i);
-            if (answer.equals(bridge.get(i))) {
-                printO(answer, up, down);
+            if (bridgeGame.isSame(i)) {
+                printO(userBridge.get(i), up, down);
             }
-            if (!answer.equals(bridge.get(i))) {
-                printX(answer, up, down);
+            if (!bridgeGame.isSame(i)) {
+                printX(userBridge.get(i), up, down);
             }
         }
     }
@@ -70,23 +72,19 @@ public final class OutputView {
      * 출력을 위해 필요한 메서드의 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
     public static void printResult(BridgeGame bridgeGame) {
-        System.out.println("\n최종 게임 결과");
+        System.out.println(NEW_LINE + "최종 게임 결과");
         printMap(bridgeGame);
         printIsSuccess(bridgeGame);
         System.out.println("총 시도한 횟수: %d".formatted(bridgeGame.getTryCount()));
     }
 
     private static void printIsSuccess(BridgeGame bridgeGame) {
-        List<String> bridge = bridgeGame.getBridge();
-        List<String> userBridge = bridgeGame.getUserBridge();
-        for (int i = 0; i < userBridge.size(); i++) {
-            String answer = userBridge.get(i);
-            if (!answer.equals(bridge.get(i))) {
-                System.out.println("\n게임 성공 여부: 실패");
-                return;
-            }
+        String format = NEW_LINE + "게임 성공 여부: %s";
+        if (bridgeGame.isSuccess()) {
+            System.out.println(format.formatted("성공"));
+            return;
         }
-        System.out.println("\n게임 성공 여부: 성공");
+        System.out.println(format.formatted("실패"));
     }
 
     public static void showError(String message) {

@@ -23,6 +23,10 @@ public class BridgeGame {
         return userBridge.size() < bridge.size();
     }
 
+    public boolean isSuccess() {
+        return !isFailed();
+    }
+
     public boolean isFailed() {
         return IntStream.range(0, userBridge.size())
                 .anyMatch(i -> !userBridge.get(i).equals(bridge.get(i)));
@@ -47,8 +51,8 @@ public class BridgeGame {
         tryCount++;
     }
 
-    public List<String> getBridge() {
-        return bridge;
+    public boolean isSame(int index) {
+        return userBridge.get(index).equals(bridge.get(index));
     }
 
     public List<String> getUserBridge() {
