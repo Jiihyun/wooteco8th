@@ -1,5 +1,6 @@
-package bridge;
+package bridge.view;
 
+import bridge.domain.MovingCommand;
 import bridge.exception.ExceptionMessage;
 import bridge.util.Parser;
 import camp.nextstep.edu.missionutils.Console;
@@ -8,6 +9,8 @@ import camp.nextstep.edu.missionutils.Console;
  * 사용자로부터 입력을 받는 역할을 한다.
  */
 public final class InputView {
+
+    private static final String NEW_LINE = System.lineSeparator();
 
     private InputView() {
     }
@@ -26,8 +29,9 @@ public final class InputView {
     /**
      * 사용자가 이동할 칸을 입력받는다.
      */
-    public String readMoving() {
-        return null;
+    public MovingCommand readMoving() {
+        System.out.println(NEW_LINE + "이동할 칸을 선택해주세요. (위: U, 아래: D)");
+        return MovingCommand.from(readLine());
     }
 
     /**
