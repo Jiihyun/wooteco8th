@@ -1,6 +1,7 @@
 package bridge.view;
 
 import bridge.domain.BridgeGame;
+import bridge.domain.GameResult;
 import bridge.domain.MovingCommand;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,17 +75,14 @@ public final class OutputView {
     public static void printResult(BridgeGame bridgeGame) {
         System.out.println(NEW_LINE + "최종 게임 결과");
         printMap(bridgeGame);
-        printIsSuccess(bridgeGame);
+        printIsSuccess(bridgeGame.isSuccess());
         System.out.println("총 시도한 횟수: %d".formatted(bridgeGame.getTryCount()));
     }
 
-    private static void printIsSuccess(BridgeGame bridgeGame) {
+    private static void printIsSuccess(boolean isSuccess) {
         String format = NEW_LINE + "게임 성공 여부: %s";
-        if (bridgeGame.isSuccess()) {
-            System.out.println(format.formatted("성공"));
-            return;
-        }
-        System.out.println(format.formatted("실패"));
+        GameResult gameResult = GameResult.from(isSuccess);
+        System.out.println(format.formatted(gameResult.getDescription()));
     }
 
     public static void showError(String message) {

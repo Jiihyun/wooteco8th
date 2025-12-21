@@ -7,6 +7,7 @@ public enum ExceptionMessage {
     INVALID_BRIDGE_SIZE("다리 길이는 3부터 20 사이의 숫자여야 합니다."),
     MOVING_COMMAND_NOT_EXISTS("존재하지 않는 이동 명령어 입니다."),
     RETRY_COMMAND_NOT_EXISTS("존재하지 않는 재시도 명령어 입니다."),
+    GAME_RESULT_NOT_EXISTS("존재하지 않는 결과입니다."),
     ;
 
     private static final String ERROR_PREFIX = "[ERROR] ";
