@@ -37,8 +37,13 @@ public class BridgeGame {
      * <p>
      * 이동을 위해 필요한 메서드의 반환 타입(return type), 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
-    public void move(MovingCommand movingCommand) {
+    public void move(MovingCommand movingCommand, BridgeLog bridgeLog) {
         userBridge.add(movingCommand.name());
+        bridgeLog.addLog(movingCommand, isSame());
+    }
+
+    private boolean isSame() {
+        return userBridge.getLast().equals(bridge.get(userBridge.size() - 1));
     }
 
     /**
@@ -49,14 +54,6 @@ public class BridgeGame {
     public void retry() {
         userBridge.clear();
         tryCount++;
-    }
-
-    public boolean isSame(int index) {
-        return userBridge.get(index).equals(bridge.get(index));
-    }
-
-    public List<String> getUserBridge() {
-        return userBridge;
     }
 
     public int getTryCount() {

@@ -1,9 +1,9 @@
 package bridge.view;
 
-import bridge.domain.BridgeGame;
+import bridge.domain.BridgeLog;
 import bridge.domain.GameResult;
-import bridge.domain.MovingCommand;
-import java.util.ArrayList;
+import bridge.domain.LogType;
+import bridge.dto.TotalResult;
 import java.util.List;
 
 /**
@@ -23,48 +23,17 @@ public final class OutputView {
      * <p>
      * 출력을 위해 필요한 메서드의 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
-    public static void printMap(BridgeGame bridgeGame) {
-        List<String> up = new ArrayList<>();
-        List<String> down = new ArrayList<>();
-        judgeAnswer(bridgeGame, up, down);
-
+    public static void printMap(BridgeLog bridgeLog) {
+        List<String> up = makeShape(bridgeLog.getUp());
+        List<String> down = makeShape(bridgeLog.getDown());
         System.out.println(MAP_FORMAT.formatted(String.join(BRIDGE_DELIMITER, up)));
         System.out.println(MAP_FORMAT.formatted(String.join(BRIDGE_DELIMITER, down)));
     }
 
-    private static void judgeAnswer(BridgeGame bridgeGame, List<String> up, List<String> down) {
-        List<String> userBridge = bridgeGame.getUserBridge();
-
-        for (int i = 0; i < userBridge.size(); i++) {
-            if (bridgeGame.isSame(i)) {
-                printO(userBridge.get(i), up, down);
-            }
-            if (!bridgeGame.isSame(i)) {
-                printX(userBridge.get(i), up, down);
-            }
-        }
-    }
-
-    private static void printO(String answer, List<String> up, List<String> down) {
-        if (answer.equals(MovingCommand.U.name())) {
-            up.add("O");
-            down.add(" ");
-        }
-        if (answer.equals(MovingCommand.D.name())) {
-            up.add(" ");
-            down.add("O");
-        }
-    }
-
-    private static void printX(String answer, List<String> up, List<String> down) {
-        if (answer.equals(MovingCommand.U.name())) {
-            up.add("X");
-            down.add(" ");
-        }
-        if (answer.equals(MovingCommand.D.name())) {
-            up.add(" ");
-            down.add("X");
-        }
+    private static List<String> makeShape(List<LogType> log) {
+        return log.stream()
+                .map(LogType::getShape)
+                .toList();
     }
 
     /**
@@ -72,11 +41,11 @@ public final class OutputView {
      * <p>
      * 출력을 위해 필요한 메서드의 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
-    public static void printResult(BridgeGame bridgeGame) {
+    public static void printResult(TotalResult totalResult) {
         System.out.println(NEW_LINE + "최종 게임 결과");
-        printMap(bridgeGame);
-        printIsSuccess(bridgeGame.isSuccess());
-        System.out.println("총 시도한 횟수: %d".formatted(bridgeGame.getTryCount()));
+        printMap(totalResult.bridgeLog());
+        printIsSuccess(totalResult.isSuccess());
+        System.out.println("총 시도한 횟수: %d".formatted(totalResult.tryCount()));
     }
 
     private static void printIsSuccess(boolean isSuccess) {
