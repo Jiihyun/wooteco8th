@@ -24,6 +24,10 @@ public class VisitDate {
         return number < MIN_DATE || number > MAX_DATE;
     }
 
+    public boolean isRightRange(int minRange, int maxRange) {
+        return this.value >= minRange && this.value <= maxRange;
+    }
+
     public int getValue() {
         return value;
     }

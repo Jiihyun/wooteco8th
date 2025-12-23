@@ -39,8 +39,8 @@ public enum Menu {
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MENU_NOT_FOUND.getMessage()));
     }
 
-    public boolean isDrink() {
-        return this.type == MenuType.DRINK;
+    public boolean isSameType(MenuType type) {
+        return this.type == type;
     }
 
     public String getName() {

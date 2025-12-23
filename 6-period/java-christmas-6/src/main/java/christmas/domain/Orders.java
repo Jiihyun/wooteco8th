@@ -45,7 +45,7 @@ public class Orders {
 
     private void validateMenuType(List<Order> orders) {
         boolean isAllDrink = orders.stream()
-                .allMatch(Order::isDrink);
+                .allMatch(order -> order.isSameType(MenuType.DRINK));
         if (isAllDrink) {
             throw new IllegalArgumentException(ExceptionMessage.INVALID_ORDER.getMessage());
         }
@@ -54,6 +54,13 @@ public class Orders {
     public int calculateTotalPriceBeforeDiscount() {
         return orders.stream()
                 .mapToInt(Order::calculateOrderPrice)
+                .sum();
+    }
+
+    public int calculateSpecificTypeQuantity(MenuType menuType) {
+        return orders.stream()
+                .filter(order -> order.isSameType(menuType))
+                .mapToInt(Order::getQuantity)
                 .sum();
     }
 

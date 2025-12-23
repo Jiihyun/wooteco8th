@@ -26,8 +26,8 @@ public class Order {
         return number < MIN_QUANTITY || number > MAX_QUANTITY;
     }
 
-    public boolean isDrink() {
-        return menu.isDrink();
+    public boolean isSameType(MenuType menuType) {
+        return menu.isSameType(menuType);
     }
 
     public String getMenuName() {
