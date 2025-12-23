@@ -19,4 +19,9 @@ public class ChristmasDiscount implements DiscountStrategy {
     public int calculateDiscountAmount(VisitDate visitDate, Orders orders) {
         return DEFAULT_DISCOUNT_AMOUNT + ((visitDate.getValue() - 1) * INCREASE_DISCOUNT_AMOUNT);
     }
+
+    @Override
+    public String getName() {
+        return "크리스마스 디데이 할인";
+    }
 }

@@ -21,4 +21,9 @@ public class WeekdayDiscount implements DiscountStrategy {
     public int calculateDiscountAmount(VisitDate visitDate, Orders orders) {
         return DISCOUNT_AMOUNT_PER_DESSERT * orders.calculateSpecificTypeQuantity(MenuType.DESSERT);
     }
+
+    @Override
+    public String getName() {
+        return "평일 할인";
+    }
 }

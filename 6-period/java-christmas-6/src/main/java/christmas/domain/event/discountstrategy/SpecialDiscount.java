@@ -21,4 +21,9 @@ public class SpecialDiscount implements DiscountStrategy {
     public int calculateDiscountAmount(VisitDate visitDate, Orders orders) {
         return DISCOUNT_AMOUNT;
     }
+
+    @Override
+    public String getName() {
+        return "특별 할인";
+    }
 }

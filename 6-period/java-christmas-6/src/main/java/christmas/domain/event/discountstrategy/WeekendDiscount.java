@@ -21,4 +21,9 @@ public class WeekendDiscount implements DiscountStrategy {
     public int calculateDiscountAmount(VisitDate visitDate, Orders orders) {
         return DISCOUNT_AMOUNT_PER_MAIN * orders.calculateSpecificTypeQuantity(MenuType.MAIN);
     }
+
+    @Override
+    public String getName() {
+        return "주말 할인";
+    }
 }
