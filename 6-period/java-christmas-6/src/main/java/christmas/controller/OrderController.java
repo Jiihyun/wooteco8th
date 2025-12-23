@@ -3,6 +3,7 @@ package christmas.controller;
 import christmas.domain.Order;
 import christmas.domain.Orders;
 import christmas.domain.VisitDate;
+import christmas.domain.event.EventProcessor;
 import christmas.dto.OrderItemRequest;
 import christmas.util.RetryHandler;
 import christmas.view.InputView;
@@ -14,7 +15,9 @@ public class OrderController {
     public void run() {
         VisitDate date = RetryHandler.retryOnInvalidInput(this::createVisitDate);
         Orders orders = RetryHandler.retryOnInvalidInput(this::createOrder);
-        OutputView.showResult(date.getValue(), orders.getOrders(), orders.calculateTotalPriceBeforeDiscount());
+        EventProcessor eventProcessor = new EventProcessor();
+        eventProcessor.calculateBenefit(date, orders);
+        OutputView.showResult(date.getValue(), orders.getOrders(), orders.calculateTotalPriceBeforeDiscount(), eventProcessor);
     }
 
     private VisitDate createVisitDate() {
