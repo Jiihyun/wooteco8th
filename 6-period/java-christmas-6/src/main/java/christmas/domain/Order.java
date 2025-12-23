@@ -30,6 +30,10 @@ public class Order {
         return menu.isDrink();
     }
 
+    public String getMenuName() {
+        return menu.getName();
+    }
+
     public int getQuantity() {
         return quantity;
     }

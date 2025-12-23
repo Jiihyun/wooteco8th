@@ -23,4 +23,8 @@ public class VisitDate {
     private boolean isOutOfRange(Integer number) {
         return number < MIN_DATE || number > MAX_DATE;
     }
+
+    public int getValue() {
+        return value;
+    }
 }

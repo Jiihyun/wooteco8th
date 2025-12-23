@@ -56,4 +56,8 @@ public class Orders {
                 .mapToInt(Order::calculateOrderPrice)
                 .sum();
     }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
 }

@@ -43,6 +43,10 @@ public enum Menu {
         return this.type == MenuType.DRINK;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public int getPrice() {
         return price;
     }
