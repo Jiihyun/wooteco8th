@@ -1,10 +1,14 @@
 package christmas.controller;
 
+import christmas.domain.Benefit;
 import christmas.domain.Order;
 import christmas.domain.Orders;
 import christmas.domain.VisitDate;
 import christmas.domain.event.EventProcessor;
+import christmas.dto.BenefitResult;
 import christmas.dto.OrderItemRequest;
+import christmas.dto.OrderItemResult;
+import christmas.dto.OrderResult;
 import christmas.util.RetryHandler;
 import christmas.view.InputView;
 import christmas.view.OutputView;
@@ -15,9 +19,13 @@ public class OrderController {
     public void run() {
         VisitDate date = RetryHandler.retryOnInvalidInput(this::createVisitDate);
         Orders orders = RetryHandler.retryOnInvalidInput(this::createOrder);
-        EventProcessor eventProcessor = new EventProcessor();
-        eventProcessor.calculateBenefit(date, orders);
-        OutputView.showResult(date.getValue(), orders.getOrders(), orders.calculateTotalPriceBeforeDiscount(), eventProcessor);
+
+        Benefit benefit = calculateBenefit(date, orders);
+        int totalPriceBeforeDiscount = orders.calculateTotalPriceBeforeDiscount();
+        OrderResult orderResult = createOrderResult(benefit, orders, date, totalPriceBeforeDiscount);
+        BenefitResult benefitResult = new BenefitResult(benefit.getBenefit(),
+                benefit.calculateBenefitAmount(), benefit.calculatePayAmount(totalPriceBeforeDiscount));
+        OutputView.showResult(orderResult, benefitResult);
     }
 
     private VisitDate createVisitDate() {
@@ -31,5 +39,20 @@ public class OrderController {
                 .map(request -> new Order(request.name(), request.quantity()))
                 .toList();
         return new Orders(orders);
+    }
+
+    private Benefit calculateBenefit(VisitDate date, Orders orders) {
+        EventProcessor eventProcessor = new EventProcessor();
+        return eventProcessor.calculateBenefit(date, orders);
+    }
+
+    private OrderResult createOrderResult(Benefit benefit, Orders orders, VisitDate date, int totalPriceBeforeDiscount) {
+        boolean canGetFreeGift = benefit.canGetFreeGift();
+        List<OrderItemResult> orderItemResults = orders.getOrders().stream()
+                .map(order -> new OrderItemResult(order.getMenuName(), order.getQuantity()))
+                .toList();
+
+        return new OrderResult(date.getValue(), orderItemResults,
+                canGetFreeGift, totalPriceBeforeDiscount);
     }
 }
