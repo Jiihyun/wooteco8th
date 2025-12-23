@@ -3,14 +3,15 @@ package christmas.controller;
 import christmas.domain.Order;
 import christmas.domain.Orders;
 import christmas.dto.OrderItemRequest;
+import christmas.util.RetryHandler;
 import christmas.view.InputView;
 import java.util.List;
 
 public class OrderController {
 
     public void run() {
-        int date = InputView.readDate();
-        Orders orders = createOrder();
+        int date = RetryHandler.retryOnInvalidInput(InputView::readDate);
+        Orders orders = RetryHandler.retryOnInvalidInput(this::createOrder);
     }
 
     private Orders createOrder() {
