@@ -26,15 +26,15 @@ public class Order {
         return number < MIN_QUANTITY || number > MAX_QUANTITY;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public boolean isDrink() {
+        return menu.isDrink();
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public boolean isDrink() {
-        return menu.isDrink();
+    public int calculateOrderPrice() {
+        return quantity * menu.getPrice();
     }
 }

@@ -50,4 +50,10 @@ public class Orders {
             throw new IllegalArgumentException(ExceptionMessage.INVALID_ORDER.getMessage());
         }
     }
+
+    public int calculateTotalPriceBeforeDiscount() {
+        return orders.stream()
+                .mapToInt(Order::calculateOrderPrice)
+                .sum();
+    }
 }

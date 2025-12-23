@@ -42,4 +42,8 @@ public enum Menu {
     public boolean isDrink() {
         return this.type == MenuType.DRINK;
     }
+
+    public int getPrice() {
+        return price;
+    }
 }
