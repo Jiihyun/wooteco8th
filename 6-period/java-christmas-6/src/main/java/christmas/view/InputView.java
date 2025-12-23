@@ -42,7 +42,7 @@ public final class InputView {
 
     private static void validateOrderItemFormat(Matcher matcher) {
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(ExceptionMessage.INVALID_FORMAT.getMessage());
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_ORDER.getMessage());
         }
     }
 

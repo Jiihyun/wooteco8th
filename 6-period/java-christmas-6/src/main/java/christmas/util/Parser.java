@@ -18,7 +18,7 @@ public final class Parser {
         try {
             return Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(ExceptionMessage.INVALID_NUMBER.getMessage());
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_VISIT_DATE.getMessage());
         }
     }
 }
