@@ -12,10 +12,7 @@ public class Benefit {
     }
 
     public boolean canGetFreeGift() {
-        if (benefit.containsKey("증정 이벤트")) {
-            return true;
-        }
-        return false;
+`        return benefit.containsKey("증정 이벤트");
     }
 
     public int calculateBenefitAmount() {
@@ -34,7 +31,9 @@ public class Benefit {
     public void put(DiscountStrategy discountStrategy, VisitDate visitDate, Orders orders) {
         if (discountStrategy.canApply(visitDate)) {
             int discountAmount = discountStrategy.calculateDiscountAmount(visitDate, orders);
-            benefit.put(discountStrategy.getName(), discountAmount);
+            if (discountAmount > 0) {
+                benefit.put(discountStrategy.getName(), discountAmount);
+            }
         }
     }
 
