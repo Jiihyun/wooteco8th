@@ -20,6 +20,7 @@ public enum Badge {
 
     public static Badge from(int benefitAmount) {
         return Arrays.stream(Badge.values())
+                .sorted((b1, b2) -> b2.benefitAmount - b1.benefitAmount)
                 .filter(badge -> badge.benefitAmount <= benefitAmount)
                 .findFirst()
                 .orElse(Badge.NONE);
