@@ -12,7 +12,7 @@ public class Benefit {
     }
 
     public boolean canGetFreeGift() {
-`        return benefit.containsKey("증정 이벤트");
+        return benefit.containsKey("증정 이벤트");
     }
 
     public int calculateBenefitAmount() {

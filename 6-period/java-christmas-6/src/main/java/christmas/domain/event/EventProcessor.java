@@ -32,15 +32,14 @@ public class EventProcessor {
 
     public Benefit calculateBenefit(VisitDate visitDate, Orders orders) {
         Benefit benefit = new Benefit();
-        if (cannotGetBenefit(orders)) {
-            return benefit;
+        if (canGetBenefit(orders)) {
+            strategies.forEach(strategy ->
+                    benefit.put(strategy, visitDate, orders));
         }
-        strategies.forEach(strategy ->
-                benefit.put(strategy, visitDate, orders));
         return benefit;
     }
 
-    private static boolean cannotGetBenefit(Orders orders) {
-        return orders.calculateTotalPriceBeforeDiscount() < MIN_ORDER_AMOUNT;
+    private static boolean canGetBenefit(Orders orders) {
+        return orders.calculateTotalPriceBeforeDiscount() >= MIN_ORDER_AMOUNT;
     }
 }
