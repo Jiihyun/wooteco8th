@@ -52,7 +52,7 @@ public class OrderController {
                 .map(order -> new OrderItemResult(order.getMenuName(), order.getQuantity()))
                 .toList();
 
-        return new OrderResult(date.getValue(), orderItemResults,
+        return new OrderResult(date.getDayOfMonth(), orderItemResults,
                 canGetFreeGift, totalPriceBeforeDiscount);
     }
 }

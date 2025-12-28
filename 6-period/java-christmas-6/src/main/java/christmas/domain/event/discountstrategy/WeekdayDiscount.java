@@ -3,8 +3,6 @@ package christmas.domain.event.discountstrategy;
 import christmas.domain.MenuType;
 import christmas.domain.Orders;
 import christmas.domain.VisitDate;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 
 public class WeekdayDiscount implements DiscountStrategy {
 
@@ -12,9 +10,7 @@ public class WeekdayDiscount implements DiscountStrategy {
 
     @Override
     public boolean canApply(VisitDate visitDate) {
-        LocalDate date = LocalDate.of(2023, 12, visitDate.getValue());
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        return dayOfWeek != DayOfWeek.FRIDAY && dayOfWeek != DayOfWeek.SATURDAY;
+        return visitDate.isWeekday();
     }
 
     @Override
