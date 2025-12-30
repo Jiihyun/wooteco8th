@@ -38,7 +38,7 @@ public class MenuRecommender {
         List<String> sameCategoryMenus = Menu.findSameCategoryMenus(menuCategory);
         for (Coach coach : coaches.getCoaches()) {
             Menu menu = Menu.from(Randoms.shuffle(sameCategoryMenus).get(0));
-            while (coach.cannotEat(menu) && coach.containsRecommendMenu(menu)) {
+            while (coach.cannotEat(menu) || coach.containsRecommendMenu(menu)) {
                 menu = Menu.from(Randoms.shuffle(sameCategoryMenus).get(0));
             }
             coach.addRecommendedMenu(menu);
