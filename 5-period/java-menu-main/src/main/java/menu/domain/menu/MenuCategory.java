@@ -27,6 +27,10 @@ public enum MenuCategory {
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.INVALID_MENU_CATEGORY.getMessage()));
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public int getNumber() {
         return number;
     }

@@ -1,5 +1,6 @@
 package menu.domain.coach;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import menu.domain.menu.Menu;
@@ -11,11 +12,13 @@ public class Coach {
 
     private final Name name;
     private final List<Menu> cantEatMenus;
+    private List<Menu> recommendedMenu;
 
     public Coach(Name name, List<String> cantEatMenus) {
         validateMenu(cantEatMenus);
         this.name = name;
         this.cantEatMenus = initCantEatMenus(cantEatMenus);
+        this.recommendedMenu = new ArrayList<>();
     }
 
     private List<Menu> initCantEatMenus(List<String> cantEatMenus) {
@@ -52,6 +55,26 @@ public class Coach {
         return cantEatMenus.stream()
                 .distinct()
                 .count() != cantEatMenus.size();
+    }
+
+    public boolean cannotEat(Menu menu) {
+        return cantEatMenus.contains(menu);
+    }
+
+    public boolean containsRecommendMenu(Menu menu) {
+        return recommendedMenu.contains(menu);
+    }
+
+    public void addRecommendedMenu(Menu menu) {
+        recommendedMenu.add(menu);
+    }
+
+    public String getName() {
+        return name.getValue();
+    }
+
+    public List<Menu> getRecommendedMenu() {
+        return recommendedMenu;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package menu.domain.menu;
 
 import java.util.Arrays;
+import java.util.List;
 import menu.exception.ExceptionMessage;
 
 public enum Menu {
@@ -55,7 +56,7 @@ public enum Menu {
     피자("피자", MenuCategory.AMERICAN),
     파니니("파니니", MenuCategory.AMERICAN),
     ;
-    
+
     private final String name;
     private final MenuCategory menuCategory;
 
@@ -69,5 +70,16 @@ public enum Menu {
                 .filter(element -> element.name.equals(input))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MENU_NOT_EXISTS.getMessage()));
+    }
+
+    public static List<String> findSameCategoryMenus(MenuCategory menuCategory) {
+        return Arrays.stream(Menu.values())
+                .filter(menu -> menu.menuCategory == menuCategory)
+                .map(menu -> menu.name)
+                .toList();
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -24,4 +24,8 @@ public class Coaches {
     private boolean isOutOfRange(int size) {
         return size < MIN_SIZE || size > MAX_SIZE;
     }
+
+    public List<Coach> getCoaches() {
+        return coaches;
+    }
 }

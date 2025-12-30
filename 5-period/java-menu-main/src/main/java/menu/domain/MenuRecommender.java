@@ -3,6 +3,9 @@ package menu.domain;
 import camp.nextstep.edu.missionutils.Randoms;
 import java.util.ArrayList;
 import java.util.List;
+import menu.domain.coach.Coach;
+import menu.domain.coach.Coaches;
+import menu.domain.menu.Menu;
 import menu.domain.menu.MenuCategory;
 
 public class MenuRecommender {
@@ -31,5 +34,16 @@ public class MenuRecommender {
                 .filter(menuCategory -> menuCategory == otherMenuCategory)
                 .count() < MAX_SAME_CATEGORY_SIZE;
 
+    }
+
+    public void recommendMenu(MenuCategory menuCategory, Coaches coaches) {
+        List<String> sameCategoryMenus = Menu.findSameCategoryMenus(menuCategory);
+        for (Coach coach : coaches.getCoaches()) {
+            Menu menu = Menu.from(Randoms.shuffle(sameCategoryMenus).get(0));
+            while (coach.cannotEat(menu) && coach.containsRecommendMenu(menu)) {
+                menu = Menu.from(Randoms.shuffle(sameCategoryMenus).get(0));
+            }
+            coach.addRecommendedMenu(menu);
+        }
     }
 }
