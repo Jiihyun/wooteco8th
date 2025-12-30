@@ -2,6 +2,7 @@ package menu.domain;
 
 import camp.nextstep.edu.missionutils.Randoms;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import menu.domain.coach.Coach;
 import menu.domain.coach.Coaches;
@@ -29,11 +30,8 @@ public class MenuRecommender {
         return categories.size() < CATEGORY_SIZE;
     }
 
-    private boolean canRecommendCategory(List<MenuCategory> categories, MenuCategory otherMenuCategory) {
-        return categories.stream()
-                .filter(menuCategory -> menuCategory == otherMenuCategory)
-                .count() < MAX_SAME_CATEGORY_SIZE;
-
+    private boolean canRecommendCategory(List<MenuCategory> categories, MenuCategory category) {
+        return Collections.frequency(categories, category) < MAX_SAME_CATEGORY_SIZE;
     }
 
     public void recommendMenu(MenuCategory menuCategory, Coaches coaches) {
