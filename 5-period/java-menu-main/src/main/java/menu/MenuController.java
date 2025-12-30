@@ -14,13 +14,11 @@ public class MenuController {
 
     public void run() {
         OutputView.showIntro();
+
         Names names = RetryHandler.retryOnInvalidInput(() -> new Names(InputView.readCoachName()));
         Coaches coaches = RetryHandler.retryOnInvalidInput(() -> createCoaches(names));
-        MenuRecommender menuRecommender = new MenuRecommender();
-        List<MenuCategory> categories = menuRecommender.recommendCategory();
-        OutputView.showCategory(categories);
-        recommendMenu(categories, menuRecommender, coaches);
-        showRecommendedMenu(coaches);
+        recommendMenu(coaches);
+
         OutputView.showOutro();
     }
 
@@ -33,12 +31,17 @@ public class MenuController {
                 .toList());
     }
 
-    private void recommendMenu(List<MenuCategory> categories, MenuRecommender menuRecommender, Coaches coaches) {
+    private void recommendMenu(Coaches coaches) {
+        MenuRecommender menuRecommender = new MenuRecommender();
+        List<MenuCategory> categories = generateMenuCategories(menuRecommender);
         categories.forEach(category -> menuRecommender.recommendMenu(category, coaches));
-    }
-
-    private void showRecommendedMenu(Coaches coaches) {
         coaches.getCoaches().forEach(
                 coach -> OutputView.showRecommendedMenu(coach.getName(), coach.getRecommendedMenu()));
+    }
+
+    private List<MenuCategory> generateMenuCategories(MenuRecommender menuRecommender) {
+        List<MenuCategory> categories = menuRecommender.recommendCategory();
+        OutputView.showCategory(categories);
+        return categories;
     }
 }
