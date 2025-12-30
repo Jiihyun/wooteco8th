@@ -40,4 +40,8 @@ public final class OutputView {
     public static void showOutro() {
         System.out.println("추천을 완료했습니다.");
     }
+
+    public static void showError(String message) {
+        System.out.println(message);
+    }
 }
