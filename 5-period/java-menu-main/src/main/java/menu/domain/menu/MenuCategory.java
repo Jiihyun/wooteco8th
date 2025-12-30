@@ -1,5 +1,8 @@
 package menu.domain.menu;
 
+import java.util.Arrays;
+import menu.exception.ExceptionMessage;
+
 public enum MenuCategory {
 
     JAPANESE("일식", 1),
@@ -15,5 +18,16 @@ public enum MenuCategory {
     MenuCategory(String description, int number) {
         this.description = description;
         this.number = number;
+    }
+
+    public static MenuCategory from(int number) {
+        return Arrays.stream(MenuCategory.values())
+                .filter(element -> element.number == number)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.INVALID_MENU_CATEGORY.getMessage()));
+    }
+
+    public int getNumber() {
+        return number;
     }
 }
