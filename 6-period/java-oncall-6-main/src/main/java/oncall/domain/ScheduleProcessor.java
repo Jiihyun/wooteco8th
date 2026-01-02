@@ -13,37 +13,39 @@ public class ScheduleProcessor {
         this.schedule = schedule;
     }
 
-    //TODO: 리팩토링(메서드 길이 제한 오버)
     public List<ScheduleInfo> process() {
         List<ScheduleInfo> scheduleInfos = new ArrayList<>();
-
-        for (int i = date.getDay(); i <= date.findEndDate(); i++) {
+        while (date.underEndDate()) {
             if (isHoliday(date)) {
-                Crews weekendSchedule = schedule.getWeekendSchedule();
-                Nickname nickname = weekendSchedule.peekFirst();
-                if (!scheduleInfos.isEmpty() && scheduleInfos.getLast().hasDuplicateSchedule(nickname)) {
-                    weekendSchedule.changeWithNextCrew();
-                }
-                Nickname removedNickname = weekendSchedule.remove();
-                weekendSchedule.addLast(removedNickname);
-                scheduleInfos.add(new ScheduleInfo(Date.from(date), removedNickname));
-                date.plusDate();
+                putSchedule(schedule.getWeekendSchedule(), scheduleInfos);
                 continue;
             }
-            Crews weekdaySchedule = schedule.getWeekdaySchedule();
-            Nickname nickname = weekdaySchedule.peekFirst();
-            if (!scheduleInfos.isEmpty() && scheduleInfos.getLast().hasDuplicateSchedule(nickname)) {
-                weekdaySchedule.changeWithNextCrew();
-            }
-            Nickname removedNickname = weekdaySchedule.remove();
-            weekdaySchedule.addLast(removedNickname);
-            scheduleInfos.add(new ScheduleInfo(Date.from(date), removedNickname));
-            date.plusDate();
+            putSchedule(schedule.getWeekdaySchedule(), scheduleInfos);
         }
         return scheduleInfos;
     }
 
     private boolean isHoliday(Date date) {
         return date.isWeekend() || date.isHoliday();
+    }
+
+    private void putSchedule(Crews schedule, List<ScheduleInfo> scheduleInfos) {
+        Nickname nickname = schedule.peekFirst();
+        changeScheduleIfDuplicated(scheduleInfos, nickname, schedule);
+        Nickname removedNickname = schedule.remove();
+        schedule.addLast(removedNickname);
+        scheduleInfos.add(new ScheduleInfo(Date.from(date), removedNickname));
+        date.plusDate();
+    }
+
+    private void changeScheduleIfDuplicated(List<ScheduleInfo> scheduleInfos, Nickname nickname, Crews weekendSchedule) {
+        if (scheduleDuplicated(scheduleInfos, nickname)) {
+            weekendSchedule.changeWithNextCrew();
+        }
+    }
+
+    private boolean scheduleDuplicated(List<ScheduleInfo> scheduleInfos, Nickname nickname) {
+        return !scheduleInfos.isEmpty()
+                && scheduleInfos.getLast().hasDuplicateSchedule(nickname);
     }
 }

@@ -24,8 +24,8 @@ public class Date {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public int findEndDate() {
-        return month.getEndDate();
+    public boolean underEndDate() {
+        return day <= month.getEndDate();
     }
 
     public boolean isWeekend() {
