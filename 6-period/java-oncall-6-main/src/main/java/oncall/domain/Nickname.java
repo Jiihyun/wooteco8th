@@ -25,6 +25,10 @@ public class Nickname {
         return number < MIN_LENGTH || number > MAX_LENGTH;
     }
 
+    public String getValue() {
+        return value;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (!(o instanceof Nickname nickname)) {

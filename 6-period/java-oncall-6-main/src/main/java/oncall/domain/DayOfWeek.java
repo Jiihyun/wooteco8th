@@ -26,4 +26,35 @@ public enum DayOfWeek {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.DAYOFWEEK_NOT_EXISTS.getMessage()));
     }
+
+    public boolean isWeekend() {
+        return this == SAT || this == SUN;
+    }
+
+    public DayOfWeek getNextDayOfWeek() {
+        //TODO: 동적처리
+        if (this == MON) {
+            return TUE;
+        }
+        if (this == TUE) {
+            return WED;
+        }
+        if (this == WED) {
+            return THU;
+        }
+        if (this == THU) {
+            return FRI;
+        }
+        if (this == FRI) {
+            return SAT;
+        }
+        if (this == SAT) {
+            return SUN;
+        }
+        return MON;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
