@@ -1,6 +1,7 @@
 package oncall.domain;
 
 import java.util.Arrays;
+import java.util.List;
 import oncall.exception.ExceptionMessage;
 
 public enum DayOfWeek {
@@ -14,10 +15,11 @@ public enum DayOfWeek {
     SUN("일"),
     ;
 
-    private final String description;
+    private static final List<DayOfWeek> processOrder = makeOrder();
 
-    DayOfWeek(String description) {
-        this.description = description;
+    private static List<DayOfWeek> makeOrder() {
+        return Arrays.stream(DayOfWeek.values())
+                .toList();
     }
 
     public static DayOfWeek from(String input) {
@@ -27,31 +29,22 @@ public enum DayOfWeek {
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.DAYOFWEEK_NOT_EXISTS.getMessage()));
     }
 
+    private final String description;
+
+    DayOfWeek(String description) {
+        this.description = description;
+    }
+
     public boolean isWeekend() {
         return this == SAT || this == SUN;
     }
 
     public DayOfWeek getNextDayOfWeek() {
-        //TODO: 동적처리
-        if (this == MON) {
-            return TUE;
+        int index = processOrder.indexOf(this);
+        if (index == processOrder.size() - 1) {
+            return processOrder.getFirst();
         }
-        if (this == TUE) {
-            return WED;
-        }
-        if (this == WED) {
-            return THU;
-        }
-        if (this == THU) {
-            return FRI;
-        }
-        if (this == FRI) {
-            return SAT;
-        }
-        if (this == SAT) {
-            return SUN;
-        }
-        return MON;
+        return processOrder.get(index + 1);
     }
 
     public String getDescription() {
