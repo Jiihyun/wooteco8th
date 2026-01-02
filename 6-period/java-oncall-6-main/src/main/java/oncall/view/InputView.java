@@ -15,7 +15,7 @@ public final class InputView {
     }
 
     public static OncallRequest readMonthAndStartDay() {
-        System.out.println("비상 근무를 배정할 월과 시작 요일을 입력하세요> ");
+        System.out.print("비상 근무를 배정할 월과 시작 요일을 입력하세요> ");
         List<String> parsedInput = Parser.parseByDelimiter(readLine(), DELIMITER);
         int month = Parser.parseToInt(parsedInput.getFirst());
         String dayOfWeek = parsedInput.getLast();
@@ -23,12 +23,12 @@ public final class InputView {
     }
 
     public static List<String> readWeekdaySchedule() {
-        System.out.println("평일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
+        System.out.print("평일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
         return Parser.parseByDelimiter(readLine(), DELIMITER);
     }
 
     public static List<String> readWeekendSchedule() {
-        System.out.println("휴일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
+        System.out.print("휴일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
         return Parser.parseByDelimiter(readLine(), DELIMITER);
     }
 
