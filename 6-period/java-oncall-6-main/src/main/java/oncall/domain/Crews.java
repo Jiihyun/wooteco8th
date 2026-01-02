@@ -5,10 +5,14 @@ import oncall.exception.ExceptionMessage;
 
 public class Crews {
 
+    private static final int MIN_SIZE = 5;
+    private static final int MAX_SIZE = 35;
+
     private final List<Nickname> crews;
 
     public Crews(List<Nickname> crews) {
         validateDuplicate(crews);
+        validateRange(crews.size());
         this.crews = crews;
     }
 
@@ -22,5 +26,15 @@ public class Crews {
         return values.stream()
                 .distinct()
                 .count() != values.size();
+    }
+
+    private void validateRange(int size) {
+        if (isOutOfRange(size)) {
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_CREW_RANGE.getMessage());
+        }
+    }
+
+    private boolean isOutOfRange(int number) {
+        return number < MIN_SIZE || number > MAX_SIZE;
     }
 }
