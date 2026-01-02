@@ -6,13 +6,11 @@ import java.util.List;
 public class ScheduleProcessor {
 
     private final Date date;
-    private final Crews weekdaySchedule;
-    private final Crews weekendSchedule;
+    private final Schedule schedule;
 
-    public ScheduleProcessor(Date date, Crews weekdaySchedule, Crews weekendSchedule) {
+    public ScheduleProcessor(Date date, Schedule schedule) {
         this.date = date;
-        this.weekdaySchedule = weekdaySchedule;
-        this.weekendSchedule = weekendSchedule;
+        this.schedule = schedule;
     }
 
     //TODO: 리팩토링(메서드 길이 제한 오버)
@@ -21,6 +19,7 @@ public class ScheduleProcessor {
 
         for (int i = date.getDay(); i <= date.findEndDate(); i++) {
             if (isHoliday(date)) {
+                Crews weekendSchedule = schedule.getWeekendSchedule();
                 Nickname nickname = weekendSchedule.peekFirst();
                 if (!scheduleInfos.isEmpty() && scheduleInfos.getLast().hasDuplicateSchedule(nickname)) {
                     weekendSchedule.changeWithNextCrew();
@@ -31,6 +30,7 @@ public class ScheduleProcessor {
                 date.plusDate();
                 continue;
             }
+            Crews weekdaySchedule = schedule.getWeekdaySchedule();
             Nickname nickname = weekdaySchedule.peekFirst();
             if (!scheduleInfos.isEmpty() && scheduleInfos.getLast().hasDuplicateSchedule(nickname)) {
                 weekdaySchedule.changeWithNextCrew();

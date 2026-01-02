@@ -25,4 +25,8 @@ public final class OutputView {
         }
         return scheduleInfo.getDayOfWeek();
     }
+
+    public static void showError(String message) {
+        System.out.println(message);
+    }
 }
