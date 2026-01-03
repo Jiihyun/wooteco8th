@@ -31,25 +31,32 @@ public class MatchingMachine {
 
     private boolean isSuccess(List<String> crewNames, RequiredMatchingInfo requiredMatchingInfo, Level level, Pairs pairs) {
         List<String> shuffledNames = Randoms.shuffle(crewNames);
-
         for (int i = 0; i < shuffledNames.size() - 1; i += 2) {
             Crew crew1 = new Crew(shuffledNames.get(i));
             Crew crew2 = new Crew(shuffledNames.get(i + 1));
             Pair pair = new Pair(new ArrayList<>(Arrays.asList(crew1, crew2)));
             if (matchingResults.hasDuplicatedLevelPair(level, pair)) {
-                tryCount--;
-                if (tryCount < 0) {
-                    throw new IllegalStateException(ExceptionMessage.ALREADY_MATCHED_PAIR.getMessage());
-                }
+                minusTryCount();
                 return false;
             }
             pairs.add(pair);
         }
+        addIfOddCrews(pairs, shuffledNames);
+        matchingResults.add(new MatchingResult(requiredMatchingInfo, pairs));
+        return true;
+    }
+
+    private void minusTryCount() {
+        tryCount--;
+        if (tryCount < 0) {
+            throw new IllegalStateException(ExceptionMessage.ALREADY_MATCHED_PAIR.getMessage());
+        }
+    }
+
+    private void addIfOddCrews(Pairs pairs, List<String> shuffledNames) {
         if (shuffledNames.size() % 2 != 0) {
             pairs.addLastCrew(new Crew(shuffledNames.getLast()));
         }
-        matchingResults.add(new MatchingResult(requiredMatchingInfo, pairs));
-        return true;
     }
 
     private List<String> readCrewNames(boolean isBackend) {
