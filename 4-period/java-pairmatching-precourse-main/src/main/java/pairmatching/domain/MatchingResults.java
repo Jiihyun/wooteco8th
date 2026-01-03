@@ -1,0 +1,34 @@
+package pairmatching.domain;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MatchingResults {
+
+    private final List<MatchingResult> matchingResults;
+
+    public MatchingResults() {
+        this.matchingResults = new ArrayList<>();
+    }
+
+    public void add(MatchingResult matchingResult) {
+        matchingResults.add(matchingResult);
+    }
+
+    //todo: 검증 필요
+    public boolean hasDuplicatedLevelPair(Level level, Pair pair) {
+        List<MatchingResult> sameLevelPairs = findByLevel(level);
+        for (MatchingResult sameLevelPair : sameLevelPairs) {
+            Pairs pairs = sameLevelPair.getPairs();
+            return pairs.getPairs().stream()
+                    .anyMatch(savedPair -> savedPair.equals(pair));
+        }
+        return false;
+    }
+
+    private List<MatchingResult> findByLevel(Level level) {
+        return matchingResults.stream()
+                .filter(matchingResult -> matchingResult.isSameLevel(level))
+                .toList();
+    }
+}

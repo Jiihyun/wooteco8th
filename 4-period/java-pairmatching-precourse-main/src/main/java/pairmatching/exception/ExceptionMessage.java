@@ -12,6 +12,8 @@ public enum ExceptionMessage {
     COURSE_NOT_FOUND("존재하지 않는 코스 입니다."),
     LEVEL_NOT_FOUND("존재하지 않는 레벨 입니다."),
     MISSION_NOT_FOUND("존재하지 않는 미션 입니다."),
+
+    ALREADY_MATCHED_PAIR("같은 레벨에서 매칭된 적 있는 페어입니다."),
     ;
 
     private static final String ERROR_PREFIX = "[ERROR] ";

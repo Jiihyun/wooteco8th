@@ -15,6 +15,10 @@ public class Pairs {
         pairs.add(pair);
     }
 
+    public void addLastCrew(Crew crew) {
+        pairs.getLast().add(crew);
+    }
+
     public List<Pair> getPairs() {
         return pairs;
     }

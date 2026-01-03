@@ -15,4 +15,16 @@ public class RequiredMatchingInfo {
     public boolean isBackend() {
         return course.isBackend();
     }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public Mission getMission() {
+        return mission;
+    }
 }
