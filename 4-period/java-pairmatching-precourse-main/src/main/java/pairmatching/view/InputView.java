@@ -2,6 +2,7 @@ package pairmatching.view;
 
 import camp.nextstep.edu.missionutils.Console;
 import java.util.List;
+import pairmatching.domain.AnswerCommand;
 import pairmatching.domain.GameCommand;
 import pairmatching.dto.MatchingRequest;
 import pairmatching.exception.ExceptionMessage;
@@ -10,6 +11,7 @@ import pairmatching.util.Parser;
 public final class InputView {
 
     private static final String CHOOSE_FUNCTION_MSG = """
+            
             기능을 선택하세요.
             1. 페어 매칭
             2. 페어 조회
@@ -30,6 +32,8 @@ public final class InputView {
             과정, 레벨, 미션을 선택하세요.
             ex) 백엔드, 레벨1, 자동차경주""";
 
+    private static final String RE_MATCHING_MSG = "매칭 정보가 있습니다. 다시 매칭하시겠습니까?";
+
     private static final String MATCHING_INFO_DELIMITER = ", ";
 
     private InputView() {
@@ -44,6 +48,11 @@ public final class InputView {
         System.out.println(MATCHING_INFO_MSG);
         List<String> parsedInput = Parser.parseByDelimiter(readLine(), MATCHING_INFO_DELIMITER);
         return MatchingRequest.of(parsedInput);
+    }
+
+    public static AnswerCommand readRematchingAnswer() {
+        System.out.println(RE_MATCHING_MSG);
+        return AnswerCommand.from(readLine());
     }
 
     private static String readLine() {
