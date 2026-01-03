@@ -31,10 +31,9 @@ public class MatchingResult {
         return pairs;
     }
 
-    public boolean hasDuplicatedLevelPair() {
-        for (Pair pair : pairs.getPairs()) {
-
-        }
-
+    public boolean hasSameCondition(RequiredMatchingInfo requiredMatchingInfo) {
+        return this.course == requiredMatchingInfo.getCourse()
+                && this.level == requiredMatchingInfo.getLevel()
+                && this.mission == requiredMatchingInfo.getMission();
     }
 }

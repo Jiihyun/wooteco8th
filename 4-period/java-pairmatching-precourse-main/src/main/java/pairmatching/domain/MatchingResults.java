@@ -2,6 +2,7 @@ package pairmatching.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import pairmatching.exception.ExceptionMessage;
 
 public class MatchingResults {
 
@@ -30,5 +31,12 @@ public class MatchingResults {
         return matchingResults.stream()
                 .filter(matchingResult -> matchingResult.isSameLevel(level))
                 .toList();
+    }
+
+    public MatchingResult findByRequiredInfo(RequiredMatchingInfo requiredMatchingInfo) {
+        return matchingResults.stream()
+                .filter(matchingResult -> matchingResult.hasSameCondition(requiredMatchingInfo))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MATHING_RESULT_NOT_FOUND.getMessage()));
     }
 }
