@@ -2,38 +2,25 @@ package pairmatching.domain;
 
 public class MatchingResult {
 
-    private final Course course;
-    private final Level level;
-    private final Mission mission;
+    private final RequiredMatchingInfo requiredMatchingInfo;
     private final Pairs pairs;
 
-    public static MatchingResult of(RequiredMatchingInfo requiredMatchingInfo, Pairs pairs) {
-        return new MatchingResult(
-                requiredMatchingInfo.getCourse(),
-                requiredMatchingInfo.getLevel(),
-                requiredMatchingInfo.getMission(),
-                pairs
-        );
-    }
-
-    public MatchingResult(Course course, Level level, Mission mission, Pairs pairs) {
-        this.course = course;
-        this.level = level;
-        this.mission = mission;
+    public MatchingResult(RequiredMatchingInfo requiredMatchingInfo, Pairs pairs) {
+        this.requiredMatchingInfo = requiredMatchingInfo;
         this.pairs = pairs;
     }
 
     public boolean isSameLevel(Level other) {
-        return level == other;
+        return requiredMatchingInfo.getLevel() == other;
+    }
+
+    public boolean hasSameCondition(RequiredMatchingInfo requiredMatchingInfo) {
+        return this.requiredMatchingInfo.getCourse() == requiredMatchingInfo.getCourse()
+                && this.requiredMatchingInfo.getLevel() == requiredMatchingInfo.getLevel()
+                && this.requiredMatchingInfo.getMission() == requiredMatchingInfo.getMission();
     }
 
     public Pairs getPairs() {
         return pairs;
-    }
-
-    public boolean hasSameCondition(RequiredMatchingInfo requiredMatchingInfo) {
-        return this.course == requiredMatchingInfo.getCourse()
-                && this.level == requiredMatchingInfo.getLevel()
-                && this.mission == requiredMatchingInfo.getMission();
     }
 }

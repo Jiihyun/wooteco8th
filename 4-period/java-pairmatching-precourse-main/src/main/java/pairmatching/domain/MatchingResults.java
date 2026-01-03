@@ -1,15 +1,16 @@
 package pairmatching.domain;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import pairmatching.exception.ExceptionMessage;
 
 public class MatchingResults {
 
-    private final List<MatchingResult> matchingResults;
+    private final Set<MatchingResult> matchingResults;
 
     public MatchingResults() {
-        this.matchingResults = new ArrayList<>();
+        this.matchingResults = new HashSet<>();
     }
 
     public void add(MatchingResult matchingResult) {
@@ -31,6 +32,11 @@ public class MatchingResults {
         return matchingResults.stream()
                 .filter(matchingResult -> matchingResult.isSameLevel(level))
                 .toList();
+    }
+
+    public boolean existsByRequiredInfo(RequiredMatchingInfo requiredMatchingInfo) {
+        return matchingResults.stream()
+                .anyMatch(matchingResult -> matchingResult.hasSameCondition(requiredMatchingInfo));
     }
 
     public MatchingResult findByRequiredInfo(RequiredMatchingInfo requiredMatchingInfo) {

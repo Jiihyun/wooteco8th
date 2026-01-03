@@ -37,4 +37,8 @@ public enum GameCommand {
     public boolean isReset() {
         return this == RESET;
     }
+
+    public boolean isQuit() {
+        return this == QUIT;
+    }
 }
