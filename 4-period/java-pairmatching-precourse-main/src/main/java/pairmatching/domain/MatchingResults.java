@@ -39,4 +39,8 @@ public class MatchingResults {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MATHING_RESULT_NOT_FOUND.getMessage()));
     }
+
+    public void reset() {
+        matchingResults.clear();
+    }
 }
