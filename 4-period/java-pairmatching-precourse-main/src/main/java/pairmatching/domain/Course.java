@@ -20,4 +20,8 @@ public enum Course {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.COURSE_NOT_FOUND.getMessage()));
     }
+
+    public boolean isBackend() {
+        return this == BACKEND;
+    }
 }

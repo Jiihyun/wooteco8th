@@ -2,6 +2,7 @@ package pairmatching.exception;
 
 public enum ExceptionMessage {
 
+    CANNOT_READ_FILE("파일을 읽는 중 문제가 발생했습니다."),
     INPUT_BLANK("빈 값을 입력하셨습니다."),
     INVALID_NUMBER("유효하지 않은 숫자입니다."),
     INVALID_FORMAT("유효하지 않은 형식입니다."),
