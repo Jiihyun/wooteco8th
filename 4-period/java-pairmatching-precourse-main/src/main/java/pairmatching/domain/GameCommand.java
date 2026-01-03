@@ -26,7 +26,15 @@ public enum GameCommand {
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.COMMAND_NOT_FOUND.getMessage()));
     }
 
-    public String getDescription() {
-        return description;
+    public boolean isMatching() {
+        return this == MATCHING;
+    }
+
+    public boolean isFind() {
+        return this == FIND;
+    }
+
+    public boolean isReset() {
+        return this == RESET;
     }
 }

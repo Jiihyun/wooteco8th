@@ -16,4 +16,8 @@ public final class OutputView {
             System.out.println(String.join(MATCHING_RESULT_DELIMITER, pair.getPairCrew()));
         }
     }
+
+    public static void showError(String message) {
+        System.out.println(message);
+    }
 }
