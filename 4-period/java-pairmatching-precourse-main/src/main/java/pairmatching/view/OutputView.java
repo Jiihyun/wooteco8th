@@ -1,6 +1,5 @@
 package pairmatching.view;
 
-import pairmatching.domain.MatchingResult;
 import pairmatching.domain.Pair;
 import pairmatching.domain.Pairs;
 
@@ -15,13 +14,6 @@ public final class OutputView {
     public static void showPairs(Pairs pairs) {
         System.out.println(NEW_LINE + "페어 매칭 결과입니다.");
         for (Pair pair : pairs.getPairs()) {
-            System.out.println(String.join(MATCHING_RESULT_DELIMITER, pair.getPairCrew()));
-        }
-    }
-
-    public static void showMatchingResult(MatchingResult matchingResult) {
-        System.out.println(NEW_LINE + "페어 매칭 결과입니다.");
-        for (Pair pair : matchingResult.getPairs().getPairs()) {
             System.out.println(String.join(MATCHING_RESULT_DELIMITER, pair.getPairCrew()));
         }
     }

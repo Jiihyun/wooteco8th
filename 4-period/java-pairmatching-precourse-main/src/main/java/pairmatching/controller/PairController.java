@@ -65,7 +65,7 @@ public class PairController {
         }
         return requiredMatchingInfo;
     }
-    
+
     private boolean hasMatchingResult(MatchingResults matchingResults, RequiredMatchingInfo requiredMatchingInfo) {
         return matchingResults.existsByRequiredInfo(requiredMatchingInfo);
     }
@@ -84,7 +84,7 @@ public class PairController {
         if (gameCommand.isFind()) {
             RequiredMatchingInfo requiredMatchingInfo = toRequiredMatchingInfo();
             MatchingResult matchingResult = matchingResults.findByRequiredInfo(requiredMatchingInfo);
-            OutputView.showMatchingResult(matchingResult);
+            OutputView.showPairs(matchingResult.getPairs());
         }
     }
 
