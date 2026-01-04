@@ -19,6 +19,11 @@ public class Pairs {
         pairs.getLast().add(crew);
     }
 
+    public boolean hasDuplicateWith(Level level, MatchingResults matchingResults) {
+        return pairs.stream()
+                .anyMatch(pair -> matchingResults.hasDuplicatedLevelPair(level, pair));
+    }
+
     public List<Pair> getPairs() {
         return pairs;
     }

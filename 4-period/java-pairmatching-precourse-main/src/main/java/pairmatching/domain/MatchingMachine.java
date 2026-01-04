@@ -9,48 +9,43 @@ import pairmatching.util.FileReader;
 
 public class MatchingMachine {
 
+    private static final int MAX_TRY = 3;
+
     private final MatchingResults matchingResults;
-    private int tryCount = 3;
 
     public MatchingMachine(MatchingResults matchingResults) {
         this.matchingResults = matchingResults;
     }
 
     public Pairs match(RequiredMatchingInfo requiredMatchingInfo) {
-        tryCount = 3;
-        List<String> crewNames = readCrewNames(requiredMatchingInfo.isBackend());
+        List<String> crewNames = readCrewNames(requiredMatchingInfo);
         Level level = requiredMatchingInfo.getLevel();
-        Pairs pairs = new Pairs();
-        while (true) {
-            if (isSuccess(crewNames, requiredMatchingInfo, level, pairs)) {
-                break;
-            }
-        }
+        Pairs pairs = matchPairs(crewNames, level, MAX_TRY);
+        matchingResults.add(new MatchingResult(requiredMatchingInfo, pairs));
         return pairs;
     }
 
-    private boolean isSuccess(List<String> crewNames, RequiredMatchingInfo requiredMatchingInfo, Level level, Pairs pairs) {
+    private Pairs matchPairs(List<String> crewNames, Level level, int maxTry) {
+        for (int attempt = 0; attempt < maxTry; attempt++) {
+            Pairs candidate = createPairs(crewNames);
+            if (!candidate.hasDuplicateWith(level, matchingResults)) {
+                return candidate;
+            }
+        }
+        throw new IllegalStateException(ExceptionMessage.ALREADY_MATCHED_PAIR.getMessage());
+    }
+
+    private Pairs createPairs(List<String> crewNames) {
         List<String> shuffledNames = Randoms.shuffle(crewNames);
+        Pairs pairs = new Pairs();
+
         for (int i = 0; i < shuffledNames.size() - 1; i += 2) {
             Crew crew1 = new Crew(shuffledNames.get(i));
             Crew crew2 = new Crew(shuffledNames.get(i + 1));
-            Pair pair = new Pair(new ArrayList<>(Arrays.asList(crew1, crew2)));
-            if (matchingResults.hasDuplicatedLevelPair(level, pair)) {
-                minusTryCount();
-                return false;
-            }
-            pairs.add(pair);
+            pairs.add(new Pair(new ArrayList<>(Arrays.asList(crew1, crew2))));
         }
         addIfOddCrews(pairs, shuffledNames);
-        matchingResults.add(new MatchingResult(requiredMatchingInfo, pairs));
-        return true;
-    }
-
-    private void minusTryCount() {
-        tryCount--;
-        if (tryCount < 0) {
-            throw new IllegalStateException(ExceptionMessage.ALREADY_MATCHED_PAIR.getMessage());
-        }
+        return pairs;
     }
 
     private void addIfOddCrews(Pairs pairs, List<String> shuffledNames) {
@@ -59,8 +54,8 @@ public class MatchingMachine {
         }
     }
 
-    private List<String> readCrewNames(boolean isBackend) {
-        if (isBackend) {
+    private List<String> readCrewNames(RequiredMatchingInfo requiredMatchingInfo) {
+        if (requiredMatchingInfo.isBackend()) {
             return FileReader.readBackendCrewNames();
         }
         return FileReader.readFrontendCrewNames();
