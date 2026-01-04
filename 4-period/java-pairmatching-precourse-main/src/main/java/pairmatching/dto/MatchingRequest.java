@@ -14,7 +14,7 @@ public record MatchingRequest(
         return new MatchingRequest(
                 Course.from(parsedInfo.getFirst()),
                 Level.from(parsedInfo.get(1)),
-                Mission.from(parsedInfo.getLast())
+                Mission.from(Level.from(parsedInfo.get(1)), parsedInfo.getLast())
         );
     }
 }

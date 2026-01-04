@@ -23,9 +23,9 @@ public enum Mission {
         this.name = name;
     }
 
-    public static Mission from(String input) {
+    public static Mission from(Level level, String input) {
         return Arrays.stream(Mission.values())
-                .filter(element -> element.name.equals(input))
+                .filter(element -> element.level == level && element.name.equals(input))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MISSION_NOT_FOUND.getMessage()));
     }
