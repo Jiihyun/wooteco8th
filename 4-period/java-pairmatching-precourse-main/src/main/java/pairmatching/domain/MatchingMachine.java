@@ -1,8 +1,6 @@
 package pairmatching.domain;
 
 import camp.nextstep.edu.missionutils.Randoms;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import pairmatching.exception.ExceptionMessage;
 import pairmatching.util.FileReader;
@@ -42,7 +40,7 @@ public class MatchingMachine {
         for (int i = 0; i < shuffledNames.size() - 1; i += 2) {
             Crew crew1 = new Crew(shuffledNames.get(i));
             Crew crew2 = new Crew(shuffledNames.get(i + 1));
-            pairs.add(new Pair(new ArrayList<>(Arrays.asList(crew1, crew2))));
+            pairs.add(new Pair(List.of(crew1, crew2)));
         }
         addIfOddCrews(pairs, shuffledNames);
         return pairs;

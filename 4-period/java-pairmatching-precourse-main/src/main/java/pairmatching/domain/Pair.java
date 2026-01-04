@@ -1,5 +1,6 @@
 package pairmatching.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,7 +9,7 @@ public class Pair {
     private final List<Crew> pairCrew;
 
     public Pair(List<Crew> pairCrew) {
-        this.pairCrew = pairCrew;
+        this.pairCrew = new ArrayList<>(pairCrew);
     }
 
     public void add(Crew crew) {
