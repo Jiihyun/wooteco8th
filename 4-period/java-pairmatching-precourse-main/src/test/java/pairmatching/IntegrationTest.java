@@ -44,16 +44,16 @@ class IntegrationTest extends NsTest {
     void 매칭_실패_3번_초과() {
         assertShuffleTest(
                 () -> {
-                    runException("1", ",프론트엔드, 레벨1, 자동차경주", "1", "프론트엔드, 레벨1, 로또");
+                    runException("1", "프론트엔드, 레벨1, 자동차경주", "1", "프론트엔드, 레벨1, 로또");
                     assertThat(output()).contains("보노 : 덴버", "시저 : 신디", "쉐리 : 다비");
                     assertThat(output()).contains(ERROR_MESSAGE);
 
                 },
                 Arrays.asList("보노", "덴버", "시저", "신디", "쉐리", "다비"),
-                Arrays.asList("시저", "신디", "보노", "다비", "덴버", "쉐리")
+                Arrays.asList("신디", "시저", "보노", "다비", "덴버", "쉐리")
         );
     }
-    
+
     @Test
     void 없는_매칭_조회에_대한_예외_처리() {
         assertSimpleTest(

@@ -1,15 +1,29 @@
 package pairmatching.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import pairmatching.exception.ExceptionMessage;
 
 public class Pair {
 
     private final List<Crew> pairCrew;
 
     public Pair(List<Crew> pairCrew) {
+        validateUnique(pairCrew);
         this.pairCrew = new ArrayList<>(pairCrew);
+    }
+
+    private void validateUnique(List<Crew> pairCrew) {
+        if (isDuplicated(pairCrew)) {
+            throw new IllegalArgumentException(ExceptionMessage.DUPLICATED_CREW.getMessage());
+        }
+    }
+
+    private boolean isDuplicated(List<Crew> pairCrew) {
+        return pairCrew.stream()
+                .distinct()
+                .count() != pairCrew.size();
     }
 
     public void add(Crew crew) {
@@ -27,11 +41,12 @@ public class Pair {
         if (!(o instanceof Pair pair)) {
             return false;
         }
-        return Objects.equals(getPairCrew(), pair.getPairCrew());
+
+        return new HashSet<>(pairCrew).equals(new HashSet<>(pair.pairCrew));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getPairCrew());
+        return new HashSet<>(pairCrew).hashCode();
     }
 }

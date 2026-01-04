@@ -24,6 +24,10 @@ public class Pairs {
                 .anyMatch(pair -> matchingResults.hasDuplicatedLevelPair(level, pair));
     }
 
+    public boolean contains(Pair pair) {
+        return pairs.contains(pair);
+    }
+
     public List<Pair> getPairs() {
         return pairs;
     }

@@ -23,4 +23,8 @@ public class MatchingResult {
     public Pairs getPairs() {
         return pairs;
     }
+
+    public boolean contains(Pair pair) {
+        return pairs.contains(pair);
+    }
 }

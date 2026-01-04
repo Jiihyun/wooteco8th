@@ -1,7 +1,6 @@
 package pairmatching.domain;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import pairmatching.exception.ExceptionMessage;
 
@@ -17,21 +16,10 @@ public class MatchingResults {
         matchingResults.add(matchingResult);
     }
 
-    //todo: 검증 필요
     public boolean hasDuplicatedLevelPair(Level level, Pair pair) {
-        List<MatchingResult> sameLevelPairs = findByLevel(level);
-        for (MatchingResult sameLevelPair : sameLevelPairs) {
-            Pairs pairs = sameLevelPair.getPairs();
-            return pairs.getPairs().stream()
-                    .anyMatch(savedPair -> savedPair.equals(pair));
-        }
-        return false;
-    }
-
-    private List<MatchingResult> findByLevel(Level level) {
         return matchingResults.stream()
                 .filter(matchingResult -> matchingResult.isSameLevel(level))
-                .toList();
+                .anyMatch(matchingResult -> matchingResult.contains(pair));
     }
 
     public boolean existsByRequiredInfo(RequiredMatchingInfo requiredMatchingInfo) {
