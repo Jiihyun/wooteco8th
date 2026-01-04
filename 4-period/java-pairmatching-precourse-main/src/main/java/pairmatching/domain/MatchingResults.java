@@ -46,6 +46,10 @@ public class MatchingResults {
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MATHING_RESULT_NOT_FOUND.getMessage()));
     }
 
+    public void remove(MatchingResult matchingResult) {
+        matchingResults.remove(matchingResult);
+    }
+
     public void reset() {
         matchingResults.clear();
     }

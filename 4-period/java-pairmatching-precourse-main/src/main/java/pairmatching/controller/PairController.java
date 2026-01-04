@@ -34,36 +34,55 @@ public class PairController {
 
     private void matchByCommand(GameCommand gameCommand, MatchingResults matchingResults, MatchingMachine matchingMachine) {
         if (gameCommand.isMatching()) {
-            MatchingRequest matchingRequest = RetryHandler.retryOnInvalidInput(InputView::readMatchingInfo);
-            RequiredMatchingInfo requiredMatchingInfo = new RequiredMatchingInfo(matchingRequest.course(), matchingRequest.level(), matchingRequest.mission());
-            if (matchingResults.existsByRequiredInfo(requiredMatchingInfo)) {
-                requiredMatchingInfo = readRematchInfo(matchingResults, requiredMatchingInfo);
+            RequiredMatchingInfo requiredMatchingInfo = toRequiredMatchingInfo();
+            RequiredMatchingInfo resolvedInfo = resolveIfDuplicate(matchingResults, requiredMatchingInfo);
+            try {
+                matchPair(matchingMachine, resolvedInfo);
+            } catch (IllegalStateException illegalStateException) {
+                OutputView.showError(illegalStateException.getMessage());
             }
-            Pairs pairs = matchingMachine.match(requiredMatchingInfo);
-            OutputView.showPairs(pairs);
         }
     }
 
-    private RequiredMatchingInfo readRematchInfo(MatchingResults matchingResults, RequiredMatchingInfo requiredMatchingInfo) {
-        MatchingRequest matchingRequest;
-        AnswerCommand answerCommand = RetryHandler.retryOnInvalidInput(InputView::readRematchingAnswer);
-        while (answerCommand.isNo()) {
-            matchingRequest = RetryHandler.retryOnInvalidInput(InputView::readMatchingInfo);
-            requiredMatchingInfo = new RequiredMatchingInfo(matchingRequest.course(), matchingRequest.level(), matchingRequest.mission());
-            if (matchingResults.existsByRequiredInfo(requiredMatchingInfo)) {
-                answerCommand = RetryHandler.retryOnInvalidInput(InputView::readRematchingAnswer);
+    private RequiredMatchingInfo toRequiredMatchingInfo() {
+        MatchingRequest matchingRequest = RetryHandler.retryOnInvalidInput(InputView::readMatchingInfo);
+        return new RequiredMatchingInfo(
+                matchingRequest.course(),
+                matchingRequest.level(),
+                matchingRequest.mission());
+    }
+
+    private RequiredMatchingInfo resolveIfDuplicate(MatchingResults matchingResults, RequiredMatchingInfo requiredMatchingInfo) {
+        if (!hasMatchingResult(matchingResults, requiredMatchingInfo)) {
+            return requiredMatchingInfo;
+        }
+        while (hasMatchingResult(matchingResults, requiredMatchingInfo)) {
+            if (isYes()) {
+                matchingResults.remove(matchingResults.findByRequiredInfo(requiredMatchingInfo));
+                return requiredMatchingInfo;
             }
+            requiredMatchingInfo = toRequiredMatchingInfo();
         }
         return requiredMatchingInfo;
+    }
+    
+    private boolean hasMatchingResult(MatchingResults matchingResults, RequiredMatchingInfo requiredMatchingInfo) {
+        return matchingResults.existsByRequiredInfo(requiredMatchingInfo);
+    }
+
+    private boolean isYes() {
+        AnswerCommand answer = RetryHandler.retryOnInvalidInput(InputView::readRematchingAnswer);
+        return answer.isYes();
+    }
+
+    private void matchPair(MatchingMachine matchingMachine, RequiredMatchingInfo requiredMatchingInfo) {
+        Pairs pairs = matchingMachine.match(requiredMatchingInfo);
+        OutputView.showPairs(pairs);
     }
 
     private void findByCommand(GameCommand gameCommand, MatchingResults matchingResults) {
         if (gameCommand.isFind()) {
-            MatchingRequest matchingRequest = RetryHandler.retryOnInvalidInput(InputView::readMatchingInfo);
-            RequiredMatchingInfo requiredMatchingInfo = new RequiredMatchingInfo(
-                    matchingRequest.course(),
-                    matchingRequest.level(),
-                    matchingRequest.mission());
+            RequiredMatchingInfo requiredMatchingInfo = toRequiredMatchingInfo();
             MatchingResult matchingResult = matchingResults.findByRequiredInfo(requiredMatchingInfo);
             OutputView.showMatchingResult(matchingResult);
         }
@@ -72,6 +91,7 @@ public class PairController {
     private void resetByCommand(GameCommand gameCommand, MatchingResults matchingResults) {
         if (gameCommand.isReset()) {
             matchingResults.reset();
+            OutputView.showResetMessage();
         }
     }
 }
