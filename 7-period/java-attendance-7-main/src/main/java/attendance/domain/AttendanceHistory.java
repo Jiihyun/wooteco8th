@@ -5,30 +5,28 @@ import attendance.util.FileReader;
 import attendance.util.Parser;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class AttendanceHistory {
 
     public static final String ATTENDANCE_INFO_DELIMITER = ",";
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
-    private final Map<Nickname, LocalDateTime> history;
+    private final List<Attendance> history;
 
     public AttendanceHistory() {
         this.history = init();
     }
 
-    private Map<Nickname, LocalDateTime> init() {
+    private List<Attendance> init() {
         List<String> attendances = FileReader.readAttendances();
-
-        Map<Nickname, LocalDateTime> history = new HashMap<>();
+        List<Attendance> history = new ArrayList<>();
         for (String attendance : attendances) {
             List<String> info = Parser.parseByDelimiter(attendance, ATTENDANCE_INFO_DELIMITER);
             String nickname = info.getFirst();
             LocalDateTime localDateTime = parseLocalDateTime(info);
-            history.put(new Nickname(nickname), localDateTime);
+            history.add(new Attendance(nickname, localDateTime));
         }
         return history;
     }
@@ -38,20 +36,25 @@ public class AttendanceHistory {
         return LocalDateTime.parse(info.getLast(), formatter);
     }
 
-    public Nickname findNickname(String otherNickname) {
-        return history.keySet().stream()
-                .filter(nickname -> nickname.hasSameValue(otherNickname))
+    public boolean containsAttendance(String nickname, LocalDateTime localDateTime) {
+        return history.stream()
+                .anyMatch(attendance -> attendance.exists(nickname, localDateTime));
+    }
+
+    public Attendance findAttendance(String nickname, int dayOfMonth) {
+        return history.stream()
+                .filter(attendance -> attendance.hasSameNickname(nickname)
+                        && attendance.hasSameDateTime(dayOfMonth))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NICKNAME_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.HISTORY_NOT_EXISTS.getMessage()));
     }
 
-    public boolean containsAttendance(Nickname nickname, LocalDateTime localDateTime) {
-        return history.containsKey(findNickname(nickname.getValue()))
-                && history.containsValue(localDateTime);
+    public boolean containsNickname(String nickname) {
+        return history.stream()
+                .anyMatch(attendance -> attendance.hasSameNickname(nickname));
     }
 
-    private boolean containsNickname(String otherValue) {
-        return history.keySet().stream()
-                .anyMatch(nickname -> nickname.getValue().equals(otherValue));
+    public void edit(Attendance attendance, LocalDateTime dateTime) {
+        attendance.editDateTime(dateTime);
     }
 }
