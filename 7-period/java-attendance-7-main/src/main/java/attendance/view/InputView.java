@@ -51,9 +51,9 @@ public final class InputView {
         return readLine();
     }
 
-    public static int readDayForEdit() {
+    public static LocalDate readDayForEdit() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return Parser.parseToInt(readLine());
+        return Parser.parseDate(readLine());
     }
 
     public static LocalTime readEditedTime() {

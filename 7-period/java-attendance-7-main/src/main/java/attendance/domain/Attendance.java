@@ -2,16 +2,17 @@ package attendance.domain;
 
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class Attendance {
 
     private String nickname;
     private LocalDateTime dateTime;
+    private AttendanceState attendanceState;
 
-    public Attendance(String nickname, LocalDateTime dateTime) {
+    public Attendance(String nickname, LocalDateTime dateTime, AttendanceState attendanceState) {
         this.nickname = nickname;
         this.dateTime = dateTime;
+        this.attendanceState = attendanceState;
     }
 
     public boolean hasSameNickname(String nickname) {
@@ -46,19 +47,7 @@ public class Attendance {
         return this.dateTime.getDayOfMonth() < dateTime.getDayOfMonth();
     }
 
-    @Override
-    public final boolean equals(Object o) {
-        if (!(o instanceof Attendance that)) {
-            return false;
-        }
-
-        return Objects.equals(getNickname(), that.getNickname()) && Objects.equals(getDateTime(), that.getDateTime());
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hashCode(getNickname());
-        result = 31 * result + Objects.hashCode(getDateTime());
-        return result;
+    public AttendanceState getAttendanceState() {
+        return attendanceState;
     }
 }

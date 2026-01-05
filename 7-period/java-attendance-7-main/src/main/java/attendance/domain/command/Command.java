@@ -25,4 +25,16 @@ public enum Command {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.COMMAND_NOT_FOUND.getMessage()));
     }
+
+    public boolean isCheckAttendance() {
+        return this == CHECK_ATTENDANCE;
+    }
+
+    public boolean isEditAttendance() {
+        return this == EDIT_ATTENDANCE;
+    }
+
+    public boolean isQuit() {
+        return this == QUIT;
+    }
 }

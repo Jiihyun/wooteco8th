@@ -26,7 +26,7 @@ public class AttendanceHistory {
             List<String> info = Parser.parseByDelimiter(attendance, ATTENDANCE_INFO_DELIMITER);
             String nickname = info.getFirst();
             LocalDateTime localDateTime = parseLocalDateTime(info);
-            history.add(new Attendance(nickname, localDateTime));
+            history.add(new Attendance(nickname, localDateTime, AttendanceState.출석));
         }
         return history;
     }

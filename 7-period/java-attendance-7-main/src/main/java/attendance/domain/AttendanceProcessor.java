@@ -16,6 +16,7 @@ public class AttendanceProcessor {
     public AttendanceProcessor(AttendanceHistory attendanceHistory) {
         this.attendanceHistory = attendanceHistory;
     }
+    //
 
     public void checkAttendance(String nickname, LocalDateTime dateTime) {
         validateNickname(nickname);

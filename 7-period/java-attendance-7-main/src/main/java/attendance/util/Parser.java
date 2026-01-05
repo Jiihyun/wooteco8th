@@ -2,6 +2,7 @@ package attendance.util;
 
 import attendance.exception.ExceptionMessage;
 import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -15,6 +16,14 @@ public final class Parser {
     public static LocalTime parseTime(String time, DateTimeFormatter timeFormatter) {
         try {
             return LocalTime.parse(time, timeFormatter);
+        } catch (DateTimeException dateTimeException) {
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_TIME.getMessage());
+        }
+    }
+
+    public static LocalDate parseDate(String time) {
+        try {
+            return LocalDate.of(24, 12, parseToInt(time));
         } catch (DateTimeException dateTimeException) {
             throw new IllegalArgumentException(ExceptionMessage.INVALID_TIME.getMessage());
         }
