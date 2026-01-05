@@ -126,8 +126,8 @@ class IntegrationTest extends NsTest {
 
                     "4월 8일 토 로이스" + LINE_SEPARATOR,
                     "4월 9일 일 애쉬" + LINE_SEPARATOR,
-                    "4월 10일 월 쥬니" + LINE_SEPARATOR,
-                    "4월 11일 화 허브" + LINE_SEPARATOR
+                    "4월 10일 월 허브" + LINE_SEPARATOR,
+                    "4월 11일 화 쥬니" + LINE_SEPARATOR
             );
         });
     }
@@ -150,7 +150,7 @@ class IntegrationTest extends NsTest {
             );
         });
     }
-
+    
     @Override
     protected void runMain() {
         Application.main(new String[]{});

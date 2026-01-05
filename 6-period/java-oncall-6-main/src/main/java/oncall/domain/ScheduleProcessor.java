@@ -15,12 +15,14 @@ public class ScheduleProcessor {
 
     public List<ScheduleInfo> process() {
         List<ScheduleInfo> scheduleInfos = new ArrayList<>();
+        boolean isHolidayChanged = false;
+        boolean isWeekdayChanged = false;
         while (date.underEndDate()) {
             if (isHoliday(date)) {
-                putSchedule(schedule.getWeekendSchedule(), scheduleInfos);
+                isHolidayChanged = putSchedule(schedule.getWeekendSchedule(), scheduleInfos, isHolidayChanged);
                 continue;
             }
-            putSchedule(schedule.getWeekdaySchedule(), scheduleInfos);
+            isWeekdayChanged = putSchedule(schedule.getWeekdaySchedule(), scheduleInfos, isWeekdayChanged);
         }
         return scheduleInfos;
     }
@@ -29,19 +31,23 @@ public class ScheduleProcessor {
         return date.isWeekend() || date.isHoliday();
     }
 
-    private void putSchedule(Crews schedule, List<ScheduleInfo> scheduleInfos) {
-        Nickname nickname = schedule.peekFirst();
-        changeScheduleIfDuplicated(scheduleInfos, nickname, schedule);
-        Nickname removedNickname = schedule.remove();
-        schedule.addLast(removedNickname);
-        scheduleInfos.add(new ScheduleInfo(Date.from(date), removedNickname));
+    private boolean putSchedule(Crews crews, List<ScheduleInfo> infos, boolean isChanged) {
+        boolean changed = assign(crews, infos, isChanged);
         date.plusDate();
+        return changed;
     }
 
-    private void changeScheduleIfDuplicated(List<ScheduleInfo> scheduleInfos, Nickname nickname, Crews weekendSchedule) {
-        if (scheduleDuplicated(scheduleInfos, nickname)) {
-            weekendSchedule.changeWithNextCrew();
+    private boolean assign(Crews crews, List<ScheduleInfo> infos, boolean isChanged) {
+        if (isChanged) {
+            crews.rollbackTurn(date, infos);
+            return false;
         }
+        if (scheduleDuplicated(infos, crews.peekFirst())) {
+            crews.changeTurn(date, infos);
+            return true;
+        }
+        crews.assignNormally(date, infos);
+        return false;
     }
 
     private boolean scheduleDuplicated(List<ScheduleInfo> scheduleInfos, Nickname nickname) {

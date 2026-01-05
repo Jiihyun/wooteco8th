@@ -44,18 +44,28 @@ public class Crews {
         return crews.peekFirst();
     }
 
-    public void changeWithNextCrew() {
-        Nickname scheduleDuplicatedCrew = crews.pollFirst();
-        Nickname scheduleNonDuplicatedCrew = crews.pollFirst();
-        crews.addFirst(scheduleDuplicatedCrew);
-        crews.addFirst(scheduleNonDuplicatedCrew);
+    public void rollbackTurn(Date date, List<ScheduleInfo> infos) {
+        Nickname name = crews.pollFirst();
+        infos.add(new ScheduleInfo(Date.from(date), name));
+
+        Nickname last = crews.pollLast();
+        crews.addLast(name);
+        crews.addLast(last);
     }
 
-    public void addLast(Nickname nickname) {
-        crews.addLast(nickname);
+    public void changeTurn(Date date, List<ScheduleInfo> infos) {
+        Nickname first = crews.remove();
+        Nickname second = crews.remove();
+
+        infos.add(new ScheduleInfo(Date.from(date), second));
+
+        crews.addFirst(first);
+        crews.addLast(second);
     }
 
-    public Nickname remove() {
-        return crews.pollFirst();
+    public void assignNormally(Date date, List<ScheduleInfo> infos) {
+        Nickname name = crews.remove();
+        infos.add(new ScheduleInfo(Date.from(date), name));
+        crews.addLast(name);
     }
 }
