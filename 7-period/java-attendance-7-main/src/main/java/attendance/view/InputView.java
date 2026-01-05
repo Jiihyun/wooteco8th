@@ -46,6 +46,22 @@ public final class InputView {
         return Parser.parseTime(readLine(), timeFormatter);
     }
 
+    public static String readEditedNickname() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return readLine();
+    }
+
+    public static int readDayForEdit() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return Parser.parseToInt(readLine());
+    }
+
+    public static LocalTime readEditedTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
+        return Parser.parseTime(readLine(), timeFormatter);
+    }
+
     private static String readLine() {
         String input = Console.readLine().strip();
         validateInput(input);
