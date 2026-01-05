@@ -3,6 +3,7 @@ package attendance.domain;
 import attendance.dto.EditResult;
 import attendance.exception.ExceptionMessage;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
@@ -19,34 +20,32 @@ public class AttendanceProcessor {
     //
 
     public void checkAttendance(String nickname, LocalDateTime dateTime) {
-        validateNickname(nickname);
         //TODO 출석 지각 판단
         if (attendanceHistory.containsAttendance(nickname, dateTime)) {
             throw new IllegalArgumentException(ExceptionMessage.HISTORY_ALREADY_EXISTS.getMessage());
         }
-        validateWeekDay(dateTime);
         validateRunningTime(dateTime);
     }
 
-    private void validateNickname(String nickname) {
+    public void validateNickname(String nickname) {
         if (!attendanceHistory.containsNickname(nickname)) {
             throw new IllegalArgumentException(ExceptionMessage.NICKNAME_NOT_FOUND.getMessage());
         }
     }
 
-    private void validateWeekDay(LocalDateTime dateTime) {
-        if (!isWeekDay(dateTime)) {
+    public void validateWeekDay(LocalDate localDate) {
+        if (!isWeekDay(localDate)) {
             throw new IllegalArgumentException(ExceptionMessage.CANNOT_ATTENDANCE.getFormattedMessage(
-                    dateTime.getDayOfMonth(),
-                    dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+                    localDate.getDayOfMonth(),
+                    localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
         }
     }
 
-    private boolean isWeekDay(LocalDateTime time) {
-        DayOfWeek dayOfWeek = time.getDayOfWeek();
+    private boolean isWeekDay(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
         return dayOfWeek != DayOfWeek.SATURDAY
                 && dayOfWeek != DayOfWeek.SUNDAY
-                && time.getDayOfMonth() != CHRISTMAS_DAY;
+                && date.getDayOfMonth() != CHRISTMAS_DAY;
     }
 
     private void validateRunningTime(LocalDateTime dateTime) {
@@ -62,8 +61,6 @@ public class AttendanceProcessor {
     }
 
     public EditResult editAttendance(String nickname, LocalDateTime afterDateTime) {
-        validateNickname(nickname);
-        validateWeekDay(afterDateTime);
         validateRunningTime(afterDateTime);
         Attendance attendance = attendanceHistory.findAttendance(nickname, afterDateTime.getDayOfMonth());
         LocalDateTime beforeDateTime = attendance.getDateTime();

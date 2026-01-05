@@ -4,7 +4,6 @@ import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceProcessor;
 import attendance.domain.command.Command;
 import attendance.dto.EditResult;
-import attendance.util.ExceptionHandler;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import camp.nextstep.edu.missionutils.DateTimes;
@@ -18,17 +17,14 @@ public class AttendanceController {
         LocalDate dateOfToday = DateTimes.now().toLocalDate();
         AttendanceHistory attendanceHistory = new AttendanceHistory();
         AttendanceProcessor attendanceProcessor = new AttendanceProcessor(attendanceHistory);
-        process(dateOfToday, attendanceProcessor);
-    }
-
-    private void process(LocalDate dateOfToday, AttendanceProcessor attendanceProcessor) {
+        attendanceProcessor.validateWeekDay(dateOfToday);
         while (true) {
-            Command command = ExceptionHandler.showError(() -> InputView.readCommand(dateOfToday));
+            Command command = InputView.readCommand(dateOfToday);
             if (command.isCheckAttendance()) {
-                ExceptionHandler.showError(() -> checkAttendance(attendanceProcessor, dateOfToday));
+                checkAttendance(attendanceProcessor, dateOfToday);
             }
             if (command.isEditAttendance()) {
-                ExceptionHandler.showError(() -> editAttendance(attendanceProcessor));
+                editAttendance(attendanceProcessor);
             }
             if (command.isQuit()) {
                 return;
@@ -36,19 +32,21 @@ public class AttendanceController {
         }
     }
 
-    private void checkAttendance(AttendanceProcessor attendanceProcessor, LocalDate dateOfToday) {
-        String nickname = ExceptionHandler.showError(() -> InputView.readNickname());
-        LocalDateTime dateTime = ExceptionHandler.showError(() -> LocalDateTime.of(dateOfToday, InputView.readArrivedTime()));
-        attendanceProcessor.checkAttendance(nickname, dateTime);
-        OutputView.showCheckedAttendance(dateTime);
+    private void editAttendance(AttendanceProcessor attendanceProcessor) {
+        String nickname = InputView.readEditedNickname();
+        attendanceProcessor.validateNickname(nickname);
+        LocalDate date = InputView.readDayForEdit();
+        LocalTime time = InputView.readEditedTime();
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
+        EditResult editResult = attendanceProcessor.editAttendance(nickname, dateTime);
+        OutputView.showEditedAttendance(editResult);
     }
 
-    private void editAttendance(AttendanceProcessor attendanceProcessor) {
-        String nickname = ExceptionHandler.showError(() -> InputView.readEditedNickname());
-        LocalDate date = ExceptionHandler.showError(() -> InputView.readDayForEdit());
-        LocalTime time = ExceptionHandler.showError(() -> InputView.readEditedTime());
-        LocalDateTime dateTime = LocalDateTime.of(date, time);
-        EditResult editResult = ExceptionHandler.showError(() -> attendanceProcessor.editAttendance(nickname, dateTime));
-        OutputView.showEditedAttendance(editResult);
+    private void checkAttendance(AttendanceProcessor attendanceProcessor, LocalDate dateOfToday) {
+        String nickname = InputView.readNickname();
+        attendanceProcessor.validateNickname(nickname);
+        LocalDateTime dateTime = LocalDateTime.of(dateOfToday, InputView.readArrivedTime());
+        attendanceProcessor.checkAttendance(nickname, dateTime);
+        OutputView.showCheckedAttendance(dateTime);
     }
 }
