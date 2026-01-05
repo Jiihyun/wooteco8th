@@ -38,12 +38,16 @@ public class AttendanceHistory {
         return LocalDateTime.parse(info.getLast(), formatter);
     }
 
-    public LocalDateTime findByNickname(String otherNickname) {
-        Nickname key = history.keySet().stream()
+    public Nickname findNickname(String otherNickname) {
+        return history.keySet().stream()
                 .filter(nickname -> nickname.hasSameValue(otherNickname))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NICKNAME_NOT_FOUND.getMessage()));
-        return history.get(key);
+    }
+
+    public boolean containsAttendance(Nickname nickname, LocalDateTime localDateTime) {
+        return history.containsKey(findNickname(nickname.getValue()))
+                && history.containsValue(localDateTime);
     }
 
     private boolean containsNickname(String otherValue) {
