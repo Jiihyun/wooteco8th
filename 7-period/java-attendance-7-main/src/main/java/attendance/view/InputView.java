@@ -2,8 +2,11 @@ package attendance.view;
 
 import attendance.domain.command.Command;
 import attendance.exception.ExceptionMessage;
+import attendance.util.Parser;
 import camp.nextstep.edu.missionutils.Console;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
@@ -19,6 +22,7 @@ public final class InputView {
             4. 제적 위험자 확인
             Q. 종료
             """;
+    private static final String TIME_FORMAT = "HH:mm";
 
     private InputView() {
     }
@@ -36,9 +40,10 @@ public final class InputView {
         return readLine();
     }
 
-    public static String readArrivedTime() {
+    public static LocalTime readArrivedTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return readLine();
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
+        return Parser.parseTime(readLine(), timeFormatter);
     }
 
     private static String readLine() {
