@@ -3,6 +3,7 @@ package attendance.domain;
 import attendance.exception.ExceptionMessage;
 import attendance.util.FileReader;
 import attendance.util.Parser;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -26,7 +27,8 @@ public class AttendanceHistory {
             List<String> info = Parser.parseByDelimiter(attendance, ATTENDANCE_INFO_DELIMITER);
             String nickname = info.getFirst();
             LocalDateTime localDateTime = parseLocalDateTime(info);
-            history.add(new Attendance(nickname, localDateTime, AttendanceState.출석));
+            boolean isMonday = isMonday(localDateTime);
+            history.add(new Attendance(nickname, localDateTime, AttendanceState.of(isMonday, localDateTime)));
         }
         return history;
     }
@@ -34,6 +36,10 @@ public class AttendanceHistory {
     private LocalDateTime parseLocalDateTime(List<String> info) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         return LocalDateTime.parse(info.getLast(), formatter);
+    }
+
+    private boolean isMonday(LocalDateTime localDateTime) {
+        return DayOfWeek.MONDAY == localDateTime.getDayOfWeek();
     }
 
     public boolean containsAttendance(String nickname, LocalDateTime localDateTime) {
@@ -54,7 +60,12 @@ public class AttendanceHistory {
                 .anyMatch(attendance -> attendance.hasSameNickname(nickname));
     }
 
+    public void put(Attendance attendance) {
+        history.add(attendance);
+    }
+
     public void edit(Attendance attendance, LocalDateTime dateTime) {
         attendance.editDateTime(dateTime);
+        attendance.editAttendanceState(AttendanceState.of(isMonday(dateTime), dateTime));
     }
 }

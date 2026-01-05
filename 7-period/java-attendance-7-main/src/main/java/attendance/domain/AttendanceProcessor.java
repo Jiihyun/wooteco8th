@@ -17,14 +17,15 @@ public class AttendanceProcessor {
     public AttendanceProcessor(AttendanceHistory attendanceHistory) {
         this.attendanceHistory = attendanceHistory;
     }
-    //
 
-    public void checkAttendance(String nickname, LocalDateTime dateTime) {
-        //TODO 출석 지각 판단
+    public AttendanceState checkAttendance(String nickname, LocalDateTime dateTime) {
         if (attendanceHistory.containsAttendance(nickname, dateTime)) {
             throw new IllegalArgumentException(ExceptionMessage.HISTORY_ALREADY_EXISTS.getMessage());
         }
         validateRunningTime(dateTime);
+        Attendance attendance = new Attendance(nickname, dateTime, AttendanceState.of(isMonday(dateTime), dateTime));
+        attendanceHistory.put(attendance);
+        return attendance.getAttendanceState();
     }
 
     public void validateNickname(String nickname) {
@@ -60,11 +61,16 @@ public class AttendanceProcessor {
                 || now.isAfter(LocalTime.of(23, 0));
     }
 
+    private boolean isMonday(LocalDateTime localDateTime) {
+        return DayOfWeek.MONDAY == localDateTime.getDayOfWeek();
+    }
+
     public EditResult editAttendance(String nickname, LocalDateTime afterDateTime) {
         validateRunningTime(afterDateTime);
         Attendance attendance = attendanceHistory.findAttendance(nickname, afterDateTime.getDayOfMonth());
         LocalDateTime beforeDateTime = attendance.getDateTime();
+        AttendanceState beforeAttendanceState = attendance.getAttendanceState();
         attendanceHistory.edit(attendance, afterDateTime);
-        return new EditResult(beforeDateTime, afterDateTime);
+        return new EditResult(beforeDateTime, beforeAttendanceState, afterDateTime, attendance.getAttendanceState());
     }
 }

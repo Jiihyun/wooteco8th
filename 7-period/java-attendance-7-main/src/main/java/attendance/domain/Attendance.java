@@ -23,6 +23,10 @@ public class Attendance {
         return this.dateTime.getDayOfMonth() == dayOfMonth;
     }
 
+    public void editAttendanceState(AttendanceState attendanceState) {
+        this.attendanceState = attendanceState;
+    }
+
     public String getNickname() {
         return nickname;
     }

@@ -2,6 +2,7 @@ package attendance.controller;
 
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceProcessor;
+import attendance.domain.AttendanceState;
 import attendance.domain.command.Command;
 import attendance.dto.EditResult;
 import attendance.view.InputView;
@@ -46,7 +47,7 @@ public class AttendanceController {
         String nickname = InputView.readNickname();
         attendanceProcessor.validateNickname(nickname);
         LocalDateTime dateTime = LocalDateTime.of(dateOfToday, InputView.readArrivedTime());
-        attendanceProcessor.checkAttendance(nickname, dateTime);
-        OutputView.showCheckedAttendance(dateTime);
+        AttendanceState attendanceState = attendanceProcessor.checkAttendance(nickname, dateTime);
+        OutputView.showCheckedAttendance(dateTime, attendanceState);
     }
 }
