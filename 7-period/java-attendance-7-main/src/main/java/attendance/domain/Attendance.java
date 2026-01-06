@@ -19,10 +19,6 @@ public class Attendance {
         return this.nickname.equals(nickname);
     }
 
-    public boolean hasSameDateTime(int dayOfMonth) {
-        return this.dateTime.getDayOfMonth() == dayOfMonth;
-    }
-
     public void editAttendanceState(AttendanceState attendanceState) {
         this.attendanceState = attendanceState;
     }
@@ -45,6 +41,10 @@ public class Attendance {
             throw new IllegalArgumentException(ExceptionMessage.CANNOT_EDIT.getMessage());
         }
         this.dateTime = dateTime;
+    }
+
+    public boolean hasSameDay(int day) {
+        return this.dateTime.getDayOfMonth() == day;
     }
 
     private boolean isFuture(LocalDateTime dateTime) {

@@ -37,4 +37,8 @@ public enum Command {
     public boolean isQuit() {
         return this == QUIT;
     }
+
+    public boolean isCheckAttendancePerCrew() {
+        return this == CHECK_ATTENDANCE_PER_CREW;
+    }
 }

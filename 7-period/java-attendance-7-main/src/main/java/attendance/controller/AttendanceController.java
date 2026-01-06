@@ -5,6 +5,7 @@ import attendance.domain.AttendanceProcessor;
 import attendance.domain.AttendanceState;
 import attendance.domain.command.Command;
 import attendance.dto.EditResult;
+import attendance.dto.ShowResult;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import camp.nextstep.edu.missionutils.DateTimes;
@@ -27,10 +28,19 @@ public class AttendanceController {
             if (command.isEditAttendance()) {
                 editAttendance(attendanceProcessor);
             }
+            if (command.isCheckAttendancePerCrew()) {
+                showAttendance(attendanceProcessor, dateOfToday);
+            }
             if (command.isQuit()) {
                 return;
             }
         }
+    }
+
+    private void showAttendance(AttendanceProcessor attendanceProcessor, LocalDate dateOfToday) {
+        String nickname = InputView.readNickname();
+        ShowResult showResult = attendanceProcessor.showAttendance(nickname, dateOfToday);
+        OutputView.showResult(nickname, showResult);
     }
 
     private void editAttendance(AttendanceProcessor attendanceProcessor) {

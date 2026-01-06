@@ -1,17 +1,19 @@
 package attendance.domain;
 
 import attendance.dto.EditResult;
+import attendance.dto.ShowResult;
 import attendance.exception.ExceptionMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public class AttendanceProcessor {
 
-    private final int CHRISTMAS_DAY = 25;
+    public static final int CHRISTMAS_DAY = 25;
     private final AttendanceHistory attendanceHistory;
 
     public AttendanceProcessor(AttendanceHistory attendanceHistory) {
@@ -72,5 +74,27 @@ public class AttendanceProcessor {
         AttendanceState beforeAttendanceState = attendance.getAttendanceState();
         attendanceHistory.edit(attendance, afterDateTime);
         return new EditResult(beforeDateTime, beforeAttendanceState, afterDateTime, attendance.getAttendanceState());
+    }
+
+    public ShowResult showAttendance(String nickname, LocalDate dateOfToday) {
+        attendanceHistory.putNoShowOfNickname(nickname, dateOfToday);
+        List<Attendance> attendances = attendanceHistory.findAllByNickname(nickname);
+        int lateCount = countAttendanceState(attendances, AttendanceState.지각);
+        int noshowCount = countAttendanceState(attendances, AttendanceState.결석);
+        noshowCount += (lateCount / 3);
+
+        return new ShowResult(
+                attendances,
+                countAttendanceState(attendances, AttendanceState.출석),
+                countAttendanceState(attendances, AttendanceState.지각),
+                countAttendanceState(attendances, AttendanceState.결석),
+                Expulsion.from(noshowCount)
+        );
+    }
+
+    private int countAttendanceState(List<Attendance> attendances, AttendanceState state) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.getAttendanceState() == state)
+                .count();
     }
 }

@@ -4,7 +4,9 @@ import attendance.exception.ExceptionMessage;
 import attendance.util.FileReader;
 import attendance.util.Parser;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +52,7 @@ public class AttendanceHistory {
     public Attendance findAttendance(String nickname, int dayOfMonth) {
         return history.stream()
                 .filter(attendance -> attendance.hasSameNickname(nickname)
-                        && attendance.hasSameDateTime(dayOfMonth))
+                        && attendance.hasSameDay(dayOfMonth))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.HISTORY_NOT_EXISTS.getMessage()));
     }
@@ -68,4 +70,38 @@ public class AttendanceHistory {
         attendance.editDateTime(dateTime);
         attendance.editAttendanceState(AttendanceState.of(isMonday(dateTime), dateTime));
     }
+
+    public void putNoShowOfNickname(String nickname, LocalDate date) {
+        for (int day = 1; day < date.getDayOfMonth(); day++) {
+            if (!hasAttendanceByDay(findAllByNickname(nickname), day) && isWeekDay(day)) {
+                history.add(new Attendance(
+                        nickname,
+                        LocalDateTime.of(
+                                LocalDate.of(2024, 12, day),
+                                LocalTime.MIN),
+                        AttendanceState.결석));
+                break;
+            }
+        }
+    }
+
+    private boolean hasAttendanceByDay(List<Attendance> attendances, int day) {
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.hasSameDay(day));
+    }
+
+    private boolean isWeekDay(int day) {
+        DayOfWeek dayOfWeek = LocalDate.of(2024, 12, day).getDayOfWeek();
+        return dayOfWeek != DayOfWeek.SATURDAY
+                && dayOfWeek != DayOfWeek.SUNDAY
+                && day != AttendanceProcessor.CHRISTMAS_DAY;
+    }
+
+    public List<Attendance> findAllByNickname(String nickname) {
+        return new ArrayList<>(history.stream()
+                .filter(attendance -> attendance.hasSameNickname(nickname))
+                .toList());
+    }
+
+
 }
