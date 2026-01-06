@@ -1,7 +1,8 @@
 package subway.view;
 
-import camp.nextstep.edu.missionutils.Console;
 import java.util.Scanner;
+import subway.domain.command.MainCommand;
+import subway.domain.command.SearchCommand;
 import subway.exception.ExceptionMessage;
 
 public class InputView {
@@ -10,6 +11,29 @@ public class InputView {
 
     public InputView(Scanner scanner) {
         this.scanner = scanner;
+    }
+
+    public MainCommand readMainCommand() {
+        System.out.println("""
+                
+                ## 메인 화면
+                1. 경로 조회
+                Q. 종료
+                
+                ## 원하는 기능을 선택하세요.""");
+        return MainCommand.from(readLine());
+    }
+
+    public SearchCommand readSearchCommand() {
+        System.out.println("""
+                
+                ## 경로 기준
+                1. 최단 거리
+                2. 최소 시간
+                B. 돌아가기
+                
+                ## 원하는 기능을 선택하세요.""");
+        return SearchCommand.from(readLine());
     }
 
     public String readStartStation() {
@@ -23,7 +47,7 @@ public class InputView {
     }
 
     private String readLine() {
-        String input = Console.readLine().strip();
+        String input = scanner.nextLine().strip();
         validateInput(input);
         return input;
     }

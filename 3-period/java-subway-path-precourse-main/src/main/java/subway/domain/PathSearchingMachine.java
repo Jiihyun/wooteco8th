@@ -6,6 +6,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import subway.domain.command.SearchCommand;
 import subway.dto.SearchedResult;
 import subway.exception.ExceptionMessage;
 
@@ -17,14 +18,14 @@ public class PathSearchingMachine {
         this.sectionInfos = sectionInfos;
     }
 
-    public SearchedResult search(Station startStation, Station endStation, String command) {
+    public SearchedResult search(Station startStation, Station endStation, SearchCommand command) {
         validateStation(startStation, endStation);
         addSectionInfo();
         WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        if (command.equals("1")) {
+        if (command == SearchCommand.최단_거리) {
             initByDistance(graph);
         }
-        if (command.equals("2")) {
+        if (command == SearchCommand.최소_시간) {
             initByTime(graph);
         }
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
