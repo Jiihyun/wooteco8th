@@ -31,9 +31,13 @@ public class Attendance {
         return dateTime;
     }
 
+    public int getDayOfMonth() {
+        return dateTime.getDayOfMonth();
+    }
+
     public boolean exists(String nickname, LocalDateTime dateTime) {
         return this.nickname.equals(nickname)
-                && this.dateTime.equals(dateTime);
+                && this.hasSameDay(dateTime.getDayOfMonth());
     }
 
     public void editDateTime(LocalDateTime dateTime) {

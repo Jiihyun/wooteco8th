@@ -13,7 +13,6 @@ public enum AttendanceState {
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     private static final LocalTime NORMAL_START_TIME = LocalTime.of(10, 0);
 
-    //TODO 등교하지 않아 출석 기록이 없는 날은 결석 처리
     public static AttendanceState of(boolean isMonday, LocalDateTime dateTime) {
         if (isMonday) {
             if (calculateOverTime(MONDAY_START_TIME, dateTime) > 30) {
@@ -34,6 +33,6 @@ public enum AttendanceState {
     }
 
     private static long calculateOverTime(LocalTime startTime, LocalDateTime dateTime) {
-        return ChronoUnit.MINUTES.between(startTime, dateTime.toLocalTime()) % 60;
+        return ChronoUnit.MINUTES.between(startTime, dateTime.toLocalTime());
     }
 }

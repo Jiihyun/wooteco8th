@@ -18,7 +18,7 @@ public enum Expulsion {
 
     public static Expulsion from(int maxNoshowCount) {
         return Arrays.stream(Expulsion.values())
-                .filter(element -> element.maxNoshowCount == maxNoshowCount)
+                .filter(element -> element.maxNoshowCount <= maxNoshowCount)
                 .findFirst()
                 .orElse(NONE);
     }

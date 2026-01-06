@@ -34,11 +34,15 @@ public enum Command {
         return this == EDIT_ATTENDANCE;
     }
 
-    public boolean isQuit() {
-        return this == QUIT;
-    }
-
     public boolean isCheckAttendancePerCrew() {
         return this == CHECK_ATTENDANCE_PER_CREW;
+    }
+
+    public boolean isCheckExpulsion() {
+        return this == CHECK_DEPORTATION;
+    }
+
+    public boolean isQuit() {
+        return this == QUIT;
     }
 }

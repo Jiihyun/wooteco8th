@@ -61,4 +61,27 @@ public final class OutputView {
             System.out.println(NEW_LINE + showResult.expulsion().name() + " 대상자입니다.");
         }
     }
+
+    public static void showExplusion(List<ShowResult> results) {
+        System.out.println("제적 위험자 조회 결과" + NEW_LINE);
+        String format = "- %s: 결석 %d회, 지각 %d회 (%s)";
+        results.sort(
+                Comparator.comparing(ShowResult::expulsion)
+                        .thenComparing(
+                                ShowResult::noShow,
+                                Comparator.reverseOrder()
+                        )
+                        .thenComparing(
+                                ShowResult::lateness,
+                                Comparator.reverseOrder()
+                        )
+                        .thenComparing(
+                                result -> result.attendances().getFirst().getNickname()
+                        )
+        );
+        for (ShowResult result : results) {
+            System.out.println(format.formatted(result.attendances().getFirst().getNickname(),
+                    result.noShow(), result.lateness(), result.expulsion().name()));
+        }
+    }
 }

@@ -10,6 +10,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AttendanceHistory {
 
@@ -73,14 +75,13 @@ public class AttendanceHistory {
 
     public void putNoShowOfNickname(String nickname, LocalDate date) {
         for (int day = 1; day < date.getDayOfMonth(); day++) {
-            if (!hasAttendanceByDay(findAllByNickname(nickname), day) && isWeekDay(day)) {
+            if (!hasAttendanceByDay(findAllByNicknameAndDay(nickname, date), day) && isWeekDay(day)) {
                 history.add(new Attendance(
                         nickname,
                         LocalDateTime.of(
                                 LocalDate.of(2024, 12, day),
                                 LocalTime.MIN),
                         AttendanceState.결석));
-                break;
             }
         }
     }
@@ -97,11 +98,16 @@ public class AttendanceHistory {
                 && day != AttendanceProcessor.CHRISTMAS_DAY;
     }
 
-    public List<Attendance> findAllByNickname(String nickname) {
+    public List<Attendance> findAllByNicknameAndDay(String nickname, LocalDate dateOfToday) {
         return new ArrayList<>(history.stream()
                 .filter(attendance -> attendance.hasSameNickname(nickname))
+                .filter(attendance -> attendance.getDayOfMonth() < dateOfToday.getDayOfMonth())
                 .toList());
     }
 
-
+    public Set<String> findAllNames() {
+        return history.stream()
+                .map(Attendance::getNickname)
+                .collect(Collectors.toSet());
+    }
 }

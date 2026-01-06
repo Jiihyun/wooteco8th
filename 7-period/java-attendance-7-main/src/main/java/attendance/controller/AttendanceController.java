@@ -12,6 +12,7 @@ import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public class AttendanceController {
 
@@ -31,10 +32,18 @@ public class AttendanceController {
             if (command.isCheckAttendancePerCrew()) {
                 showAttendance(attendanceProcessor, dateOfToday);
             }
+            if (command.isCheckExpulsion()) {
+                showExpulsion(attendanceProcessor, dateOfToday);
+            }
             if (command.isQuit()) {
                 return;
             }
         }
+    }
+
+    private void showExpulsion(AttendanceProcessor attendanceProcessor, LocalDate dateOfToday) {
+        List<ShowResult> results = attendanceProcessor.findExpulsionCrews(dateOfToday);
+        OutputView.showExplusion(results);
     }
 
     private void showAttendance(AttendanceProcessor attendanceProcessor, LocalDate dateOfToday) {

@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -78,10 +79,10 @@ public class AttendanceProcessor {
 
     public ShowResult showAttendance(String nickname, LocalDate dateOfToday) {
         attendanceHistory.putNoShowOfNickname(nickname, dateOfToday);
-        List<Attendance> attendances = attendanceHistory.findAllByNickname(nickname);
+        List<Attendance> attendances = attendanceHistory.findAllByNicknameAndDay(nickname, dateOfToday);
         int lateCount = countAttendanceState(attendances, AttendanceState.지각);
         int noshowCount = countAttendanceState(attendances, AttendanceState.결석);
-        noshowCount += (lateCount / 3);
+        noshowCount += lateCount / 3;
 
         return new ShowResult(
                 attendances,
@@ -96,5 +97,16 @@ public class AttendanceProcessor {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.getAttendanceState() == state)
                 .count();
+    }
+
+    public List<ShowResult> findExpulsionCrews(LocalDate dateOfToday) {
+        List<ShowResult> results = new ArrayList<>();
+        for (String nickname : attendanceHistory.findAllNames()) {
+            ShowResult showResult = showAttendance(nickname, dateOfToday);
+            if (showResult.expulsion() != Expulsion.NONE) {
+                results.add(showResult);
+            }
+        }
+        return results;
     }
 }
