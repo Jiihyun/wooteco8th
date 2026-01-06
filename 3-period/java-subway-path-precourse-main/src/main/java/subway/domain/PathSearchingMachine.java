@@ -24,20 +24,24 @@ public class PathSearchingMachine {
         WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         if (command == SearchCommand.최단_거리) {
             initByDistance(graph);
-        }
-        if (command == SearchCommand.최소_시간) {
-            initByTime(graph);
-        }
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(startStation.getName(), endStation.getName());
-        int distance = (int) path.getWeight();
-        List vertexList = path.getVertexList();
-        if (command.equals("1")) {
+            DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+            GraphPath path = dijkstraShortestPath.getPath(startStation.getName(), endStation.getName());
+            int distance = (int) path.getWeight();
+            List vertexList = path.getVertexList();
             int time = sectionInfos.calculateTimes(vertexList);
             return new SearchedResult(distance, time, vertexList);
         }
-        int dis = sectionInfos.calculateDistances(vertexList);
-        return new SearchedResult(distance, dis, vertexList);
+        return searchByTime(startStation, endStation, graph);
+    }
+
+    private SearchedResult searchByTime(Station startStation, Station endStation, WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+        initByTime(graph);
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        GraphPath path = dijkstraShortestPath.getPath(startStation.getName(), endStation.getName());
+        int time = (int) path.getWeight();
+        List vertexList = path.getVertexList();
+        int distance = sectionInfos.calculateDistances(vertexList);
+        return new SearchedResult(distance, time, vertexList);
     }
 
     private void initByDistance(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
@@ -55,7 +59,7 @@ public class PathSearchingMachine {
         addStation(graph);
         graph.setEdgeWeight(graph.addEdge("교대역", "강남역"), 3);
         graph.setEdgeWeight(graph.addEdge("강남역", "역삼역"), 3);
-        graph.setEdgeWeight(graph.addEdge("교대역", "남부터미널역"), 1);
+        graph.setEdgeWeight(graph.addEdge("교대역", "남부터미널역"), 2);
         graph.setEdgeWeight(graph.addEdge("남부터미널역", "양재역"), 5);
         graph.setEdgeWeight(graph.addEdge("양재역", "매봉역"), 1);
         graph.setEdgeWeight(graph.addEdge("강남역", "양재역"), 8);
