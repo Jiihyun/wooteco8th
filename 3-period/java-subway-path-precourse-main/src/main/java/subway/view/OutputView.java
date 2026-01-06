@@ -22,4 +22,8 @@ public final class OutputView {
             System.out.println(STATION_FORMAT.formatted(station));
         }
     }
+
+    public static void showError(String message) {
+        System.out.println(message);
+    }
 }

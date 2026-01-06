@@ -9,6 +9,7 @@ import subway.domain.StationRepository;
 import subway.domain.command.MainCommand;
 import subway.domain.command.SearchCommand;
 import subway.dto.SearchedResult;
+import subway.util.RetryHandler;
 import subway.view.InputView;
 import subway.view.OutputView;
 
@@ -23,7 +24,7 @@ public class SubwayController {
     public void run() {
         init();
         while (true) {
-            MainCommand mainCommand = inputView.readMainCommand();
+            MainCommand mainCommand = RetryHandler.retryOnInvalidInput(inputView::readMainCommand);
             if (mainCommand == MainCommand.SEARCH) {
                 search();
             }
@@ -35,12 +36,12 @@ public class SubwayController {
 
     private void search() {
         PathSearchingMachine pathSearchingMachine = new PathSearchingMachine(new SectionInfos());
-        SearchCommand searchCommand = inputView.readSearchCommand();
+        SearchCommand searchCommand = RetryHandler.retryOnInvalidInput(inputView::readSearchCommand);
         if (searchCommand == SearchCommand.BACK) {
             return;
         }
-        Station startStation = StationRepository.findByName(inputView.readStartStation());
-        Station endStation = StationRepository.findByName(inputView.readEndStation());
+        Station startStation = RetryHandler.retryOnInvalidInput(() -> StationRepository.findByName(inputView.readStartStation()));
+        Station endStation = RetryHandler.retryOnInvalidInput(() -> StationRepository.findByName(inputView.readEndStation()));
 
         SearchedResult searchedResult = pathSearchingMachine.search(startStation, endStation, searchCommand);
         OutputView.showSearchedResult(searchedResult);
