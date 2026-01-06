@@ -44,4 +44,8 @@ public class SectionInfos {
         }
         return sum;
     }
+
+    public List<SectionInfo> getSectionInfos() {
+        return sectionInfos;
+    }
 }
