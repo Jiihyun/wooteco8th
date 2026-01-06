@@ -1,7 +1,6 @@
 package subway.controller;
 
-import subway.domain.Line;
-import subway.domain.LineRepository;
+import subway.DataInitializer;
 import subway.domain.PathSearchingMachine;
 import subway.domain.SectionInfos;
 import subway.domain.Station;
@@ -22,53 +21,32 @@ public class SubwayController {
     }
 
     public void run() {
-        init();
-        while (true) {
-            MainCommand mainCommand = RetryHandler.retryOnInvalidInput(inputView::readMainCommand);
-            if (mainCommand == MainCommand.SEARCH) {
-                readSearchCommand();
-            }
-            if (mainCommand == MainCommand.QUIT) {
-                return;
-            }
+        DataInitializer.init();
+        while (keepProgram()) {
+            readSearchCommand();
         }
     }
 
+    private boolean keepProgram() {
+        MainCommand mainCommand = RetryHandler.retryOnInvalidInput(inputView::readMainCommand);
+        return mainCommand != MainCommand.QUIT;
+    }
+
     private void readSearchCommand() {
-        PathSearchingMachine pathSearchingMachine = new PathSearchingMachine(new SectionInfos());
         SearchCommand searchCommand = RetryHandler.retryOnInvalidInput(inputView::readSearchCommand);
         if (searchCommand == SearchCommand.BACK) {
             return;
         }
-        RetryHandler.retryOnInvalidInput(() -> search(pathSearchingMachine, searchCommand));
+        RetryHandler.retryOnInvalidInput(() -> search(searchCommand));
     }
 
-    private void search(PathSearchingMachine pathSearchingMachine, SearchCommand searchCommand) {
+    private void search(SearchCommand searchCommand) {
+        PathSearchingMachine pathSearchingMachine = new PathSearchingMachine(new SectionInfos());
+
         Station startStation = RetryHandler.retryOnInvalidInput(() -> StationRepository.findByName(inputView.readStartStation()));
         Station endStation = RetryHandler.retryOnInvalidInput(() -> StationRepository.findByName(inputView.readEndStation()));
 
         SearchedResult searchedResult = pathSearchingMachine.search(startStation, endStation, searchCommand);
         OutputView.showSearchedResult(searchedResult);
-    }
-
-    private void init() {
-        addLine();
-        addStation();
-    }
-
-    private void addLine() {
-        LineRepository.addLine(new Line("2호선"));
-        LineRepository.addLine(new Line("2호선"));
-        LineRepository.addLine(new Line("신분당선"));
-    }
-
-    private void addStation() {
-        StationRepository.addStation(new Station("교대역"));
-        StationRepository.addStation(new Station("강남역"));
-        StationRepository.addStation(new Station("역삼역"));
-        StationRepository.addStation(new Station("남부터미널역"));
-        StationRepository.addStation(new Station("양재역"));
-        StationRepository.addStation(new Station("양재시민의숲역"));
-        StationRepository.addStation(new Station("매봉역"));
     }
 }
