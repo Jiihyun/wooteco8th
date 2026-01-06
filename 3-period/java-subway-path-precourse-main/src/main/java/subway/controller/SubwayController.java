@@ -26,7 +26,7 @@ public class SubwayController {
         while (true) {
             MainCommand mainCommand = RetryHandler.retryOnInvalidInput(inputView::readMainCommand);
             if (mainCommand == MainCommand.SEARCH) {
-                search();
+                readSearchCommand();
             }
             if (mainCommand == MainCommand.QUIT) {
                 return;
@@ -34,12 +34,16 @@ public class SubwayController {
         }
     }
 
-    private void search() {
+    private void readSearchCommand() {
         PathSearchingMachine pathSearchingMachine = new PathSearchingMachine(new SectionInfos());
         SearchCommand searchCommand = RetryHandler.retryOnInvalidInput(inputView::readSearchCommand);
         if (searchCommand == SearchCommand.BACK) {
             return;
         }
+        RetryHandler.retryOnInvalidInput(() -> search(pathSearchingMachine, searchCommand));
+    }
+
+    private void search(PathSearchingMachine pathSearchingMachine, SearchCommand searchCommand) {
         Station startStation = RetryHandler.retryOnInvalidInput(() -> StationRepository.findByName(inputView.readStartStation()));
         Station endStation = RetryHandler.retryOnInvalidInput(() -> StationRepository.findByName(inputView.readEndStation()));
 
