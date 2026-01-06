@@ -19,7 +19,7 @@ public class SectionInfos {
         int sum = 0;
         for (int i = 0; i < stations.size() - 1; i++) {
             String start = stations.get(i);
-            String end = stations.get(i);
+            String end = stations.get(i + 1);
             SectionInfo info = sectionInfos.stream()
                     .filter(sectionInfo -> sectionInfo.getStations().contains(start))
                     .filter(sectionInfo -> sectionInfo.getStations().contains(end))
