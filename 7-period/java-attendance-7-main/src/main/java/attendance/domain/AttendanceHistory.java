@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.exception.ExceptionMessage;
 import attendance.util.FileReader;
 import attendance.util.Parser;
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ public class AttendanceHistory {
             String nickname = info.getFirst();
             LocalDateTime dateTime = parseLocalDateTime(info);
             CrewHistory crewHistory = histories.computeIfAbsent(nickname, key -> new CrewHistory());
-            crewHistory.add(dateTime.getDayOfMonth(), new Attendance(dateTime, AttendanceState.from(dateTime)));
+            crewHistory.put(dateTime.getDayOfMonth(), new Attendance(dateTime, AttendanceState.from(dateTime)));
         }
         return histories;
     }
@@ -41,35 +42,33 @@ public class AttendanceHistory {
         return !histories.containsKey(nickname);
     }
 
-    public boolean containsHistory(String nickname, LocalDateTime dateTime) {
+    public boolean containsHistory(String nickname, int dayOfMonth) {
         if (!histories.containsKey(nickname)) {
             return false;
         }
         CrewHistory crewHistory = histories.get(nickname);
-        return crewHistory.containsHistoryOfDay(dateTime.getDayOfMonth());
+        return crewHistory.containsHistoryOfDay(dayOfMonth);
     }
 
     public void put(String nickname, LocalDateTime dateTime, AttendanceState attendanceState) {
         CrewHistory crewHistory = histories.computeIfAbsent(nickname, key -> new CrewHistory());
-        crewHistory.add(dateTime.getDayOfMonth(),
+        crewHistory.put(dateTime.getDayOfMonth(),
                 new Attendance(dateTime, attendanceState));
     }
 
-//    public Attendance findAttendance(String nickname, int dayOfMonth) {
-//        return histories.stream()
-//                .filter(attendance -> attendance.hasSameNickname(nickname)
-//                        && attendance.hasSameDay(dayOfMonth))
-//                .findAny()
+    public Attendance findAttendanceByDayOfMonth(String nickname, int dayOfMonth) {
+        if (!containsHistory(nickname, dayOfMonth)) {
+            throw new IllegalArgumentException(ExceptionMessage.HISTORY_NOT_EXISTS.getMessage());
+        }
+        CrewHistory crewHistory = histories.get(nickname);
+        return crewHistory.findAttendanceByDayOfMonth(dayOfMonth);
+    }
 
-//                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.HISTORY_NOT_EXISTS.getMessage()));
+    public void edit(Attendance attendance, LocalDateTime dateTime) {
+        attendance.editDateTime(dateTime);
+        attendance.editAttendanceState(AttendanceState.from(dateTime));
+    }
 
-//    }
-//
-//    public void edit(Attendance attendance, LocalDateTime dateTime) {
-//        attendance.editDateTime(dateTime);
-//        attendance.editAttendanceState(AttendanceState.of(isMonday(dateTime), dateTime));
-//    }
-//
 //    public void putNoShowOfNickname(String nickname, LocalDate date) {
 //        for (int day = 1; day < date.getDayOfMonth(); day++) {
 //            if (!hasAttendanceByDay(findAllByNicknameAndDay(nickname, date), day) && isWeekDay(day)) {

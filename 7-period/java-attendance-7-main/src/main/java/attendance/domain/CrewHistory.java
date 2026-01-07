@@ -11,11 +11,15 @@ public class CrewHistory {
         this.crewHistory = new HashMap<>();
     }
 
-    public void add(int day, Attendance attendance) {
+    public void put(int day, Attendance attendance) {
         crewHistory.put(day, attendance);
     }
 
     public boolean containsHistoryOfDay(int day) {
         return crewHistory.containsKey(day);
+    }
+
+    public Attendance findAttendanceByDayOfMonth(int dayOfMonth) {
+        return crewHistory.get(dayOfMonth);
     }
 }

@@ -4,10 +4,12 @@ import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceProcessor;
 import attendance.domain.command.Command;
 import attendance.dto.AttendanceResult;
+import attendance.dto.EditedResult;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AttendanceController {
@@ -29,9 +31,9 @@ public class AttendanceController {
         if (command.isCheckAttendance()) {
             checkAttendance(attendanceProcessor);
         }
-//        if (command.isEditAttendance()) {
-//            editAttendance(attendanceProcessor);
-//        }
+        if (command.isEditAttendance()) {
+            editAttendance(attendanceProcessor);
+        }
 //        if (command.isCheckAttendancePerCrew()) {
 //            showAttendance(attendanceProcessor);
 //        }
@@ -59,15 +61,25 @@ public class AttendanceController {
         return time;
     }
 
-//    private void editAttendance(AttendanceProcessor attendanceProcessor) {
-//        String nickname = InputView.readEditedNickname();
-//        attendanceProcessor.validateNickname(nickname);
-//        LocalDate date = InputView.readDayForEdit();
-//        LocalTime time = InputView.readEditedTime();
-//        LocalDateTime dateTime = LocalDateTime.of(date, time);
-//        EditResult editResult = attendanceProcessor.editAttendance(nickname, dateTime);
-//        OutputView.showEditedAttendance(editResult);
-//    }
+    private void editAttendance(AttendanceProcessor attendanceProcessor) {
+        String nickname = readEditedNickname(attendanceProcessor);
+        LocalDateTime dateTime = readEditedDateTime(attendanceProcessor);
+        EditedResult editedResult = attendanceProcessor.editAttendance(nickname, dateTime);
+        OutputView.showEditedAttendance(editedResult);
+    }
+
+    private String readEditedNickname(AttendanceProcessor attendanceProcessor) {
+        String nickname = InputView.readEditedNickname();
+        attendanceProcessor.validateNickname(nickname);
+        return nickname;
+    }
+
+    private LocalDateTime readEditedDateTime(AttendanceProcessor attendanceProcessor) {
+        LocalDate date = InputView.readDayForEdit();
+        LocalTime time = InputView.readEditedTime();
+        attendanceProcessor.validateRunningTime(time);
+        return LocalDateTime.of(date, time);
+    }
 //
 //    private void showAttendance(AttendanceProcessor attendanceProcessor) {
 //        String nickname = InputView.readNickname();

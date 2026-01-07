@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import attendance.dto.AttendanceResult;
+import attendance.dto.EditedResult;
 import attendance.exception.ExceptionMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -56,7 +57,7 @@ public class AttendanceProcessor {
 
     public AttendanceResult checkAttendance(String nickname, LocalTime time) {
         LocalDateTime dateTime = LocalDateTime.of(dateOfToday, time);
-        if (attendanceHistory.containsHistory(nickname, dateTime)) {
+        if (attendanceHistory.containsHistory(nickname, dateTime.getDayOfMonth())) {
             throw new IllegalArgumentException(ExceptionMessage.HISTORY_ALREADY_EXISTS.getMessage());
         }
         AttendanceState attendanceState = AttendanceState.from(dateTime);
@@ -64,14 +65,13 @@ public class AttendanceProcessor {
         return new AttendanceResult(dateTime, attendanceState);
     }
 
-//    public EditResult editAttendance(String nickname, LocalDateTime afterDateTime) {
-//        validateRunningTime(afterDateTime.toLocalTime());
-//        Attendance attendance = attendanceHistory.findAttendance(nickname, afterDateTime.getDayOfMonth());
-//        LocalDateTime beforeDateTime = attendance.getDateTime();
-//        AttendanceState beforeAttendanceState = attendance.getAttendanceState();
-//        attendanceHistory.edit(attendance, afterDateTime);
-//        return new EditResult(beforeDateTime, beforeAttendanceState, afterDateTime, attendance.getAttendanceState());
-//    }
+    public EditedResult editAttendance(String nickname, LocalDateTime afterDateTime) {
+        Attendance attendance = attendanceHistory.findAttendanceByDayOfMonth(nickname, afterDateTime.getDayOfMonth());
+        LocalDateTime beforeDateTime = attendance.getDateTime();
+        AttendanceState beforeAttendanceState = attendance.getAttendanceState();
+        attendanceHistory.edit(attendance, afterDateTime);
+        return new EditedResult(beforeDateTime, beforeAttendanceState, afterDateTime, attendance.getAttendanceState());
+    }
 //
 //    public ShowResult showAttendance(String nickname) {
 //        attendanceHistory.putNoShowOfNickname(nickname, dateOfToday);
