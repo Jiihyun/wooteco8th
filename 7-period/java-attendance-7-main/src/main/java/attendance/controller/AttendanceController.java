@@ -2,8 +2,8 @@ package attendance.controller;
 
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceProcessor;
-import attendance.domain.AttendanceState;
 import attendance.domain.command.Command;
+import attendance.dto.AttendanceResult;
 import attendance.dto.EditResult;
 import attendance.dto.ShowResult;
 import attendance.view.InputView;
@@ -19,37 +19,37 @@ public class AttendanceController {
     public void run() {
         LocalDate dateOfToday = DateTimes.now().toLocalDate();
         AttendanceHistory attendanceHistory = new AttendanceHistory();
-        AttendanceProcessor attendanceProcessor = new AttendanceProcessor(attendanceHistory);
-        attendanceProcessor.validateWeekDay(dateOfToday);
+        AttendanceProcessor attendanceProcessor = new AttendanceProcessor(dateOfToday, attendanceHistory);
         while (true) {
             Command command = InputView.readCommand(dateOfToday);
-            if (command.isCheckAttendance()) {
-                checkAttendance(attendanceProcessor, dateOfToday);
-            }
-            if (command.isEditAttendance()) {
-                editAttendance(attendanceProcessor);
-            }
-            if (command.isCheckAttendancePerCrew()) {
-                showAttendance(attendanceProcessor, dateOfToday);
-            }
-            if (command.isCheckExpulsion()) {
-                showExpulsion(attendanceProcessor, dateOfToday);
-            }
             if (command.isQuit()) {
                 return;
             }
+            processCommand(command, attendanceProcessor);
         }
     }
 
-    private void showExpulsion(AttendanceProcessor attendanceProcessor, LocalDate dateOfToday) {
-        List<ShowResult> results = attendanceProcessor.findExpulsionCrews(dateOfToday);
-        OutputView.showExplusion(results);
+    private void processCommand(Command command, AttendanceProcessor attendanceProcessor) {
+        if (command.isCheckAttendance()) {
+            checkAttendance(attendanceProcessor);
+        }
+        if (command.isEditAttendance()) {
+            editAttendance(attendanceProcessor);
+        }
+        if (command.isCheckAttendancePerCrew()) {
+            showAttendance(attendanceProcessor);
+        }
+        if (command.isCheckExpulsion()) {
+            showExpulsion(attendanceProcessor);
+        }
     }
 
-    private void showAttendance(AttendanceProcessor attendanceProcessor, LocalDate dateOfToday) {
+    private void checkAttendance(AttendanceProcessor attendanceProcessor) {
         String nickname = InputView.readNickname();
-        ShowResult showResult = attendanceProcessor.showAttendance(nickname, dateOfToday);
-        OutputView.showResult(nickname, showResult);
+        attendanceProcessor.validateNickname(nickname);
+        LocalTime time = InputView.readArrivedTime();
+        AttendanceResult attendanceResult = attendanceProcessor.checkAttendance(nickname, time);
+        OutputView.showCheckedAttendance(attendanceResult);
     }
 
     private void editAttendance(AttendanceProcessor attendanceProcessor) {
@@ -62,11 +62,14 @@ public class AttendanceController {
         OutputView.showEditedAttendance(editResult);
     }
 
-    private void checkAttendance(AttendanceProcessor attendanceProcessor, LocalDate dateOfToday) {
+    private void showAttendance(AttendanceProcessor attendanceProcessor) {
         String nickname = InputView.readNickname();
-        attendanceProcessor.validateNickname(nickname);
-        LocalDateTime dateTime = LocalDateTime.of(dateOfToday, InputView.readArrivedTime());
-        AttendanceState attendanceState = attendanceProcessor.checkAttendance(nickname, dateTime);
-        OutputView.showCheckedAttendance(dateTime, attendanceState);
+        ShowResult showResult = attendanceProcessor.showAttendance(nickname);
+        OutputView.showResult(nickname, showResult);
+    }
+
+    private void showExpulsion(AttendanceProcessor attendanceProcessor) {
+        List<ShowResult> results = attendanceProcessor.findExpulsionCrews();
+        OutputView.showExplusion(results);
     }
 }

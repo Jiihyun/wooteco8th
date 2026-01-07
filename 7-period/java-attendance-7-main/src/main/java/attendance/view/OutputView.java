@@ -1,8 +1,8 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
-import attendance.domain.AttendanceState;
 import attendance.domain.Expulsion;
+import attendance.dto.AttendanceResult;
 import attendance.dto.EditResult;
 import attendance.dto.ShowResult;
 import java.time.LocalDateTime;
@@ -26,11 +26,11 @@ public final class OutputView {
     private OutputView() {
     }
 
-    public static void showCheckedAttendance(LocalDateTime dateTime, AttendanceState attendanceState) {
+    public static void showCheckedAttendance(AttendanceResult attendanceResult) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ATTENDANCE_FORMAT)
                 .withLocale(Locale.forLanguageTag("ko"));
-        String format = dateTime.format(formatter);
-        System.out.println(CHECK_ATTENDANCE_FORMAT.formatted(format, attendanceState.name()));
+        String format = attendanceResult.dateTime().format(formatter);
+        System.out.println(CHECK_ATTENDANCE_FORMAT.formatted(format, attendanceResult.attendanceState().name()));
     }
 
     public static void showEditedAttendance(EditResult editResult) {
