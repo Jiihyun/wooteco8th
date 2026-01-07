@@ -16,44 +16,59 @@ public class ScheduleProcessor {
 
     public List<OncallResult> process(Month month, DayOfWeek startDayOfWeek) {
         List<OncallResult> oncallResults = new ArrayList<>();
-        DayOfWeek dayOfWeek = startDayOfWeek;
-        for (int day = 1; day <= month.getEndOfMonth(); day++) {
-            putSchedule(month, dayOfWeek, day);
-            addResult(month, dayOfWeek, day, oncallResults);
-            dayOfWeek = getNextDayOfweek(dayOfWeek);
-        }
+        boolean weekdayChanged = false;
+        boolean weekendChanged = false;
+        put(month, startDayOfWeek, weekendChanged, oncallResults, weekdayChanged);
         return oncallResults;
     }
 
-    private void putSchedule(Month month, DayOfWeek dayOfWeek, int day) {
-        Nickname candidate;
-        if (isWeekend(dayOfWeek, month, day)) {
-            candidate = schedules.getWeekendSchedule().pollFirst();
-            process(candidate, schedules.getWeekendSchedule());
-            return;
+    private void put(Month month, DayOfWeek dayOfWeek, boolean weekendChanged, List<OncallResult> oncallResults, boolean weekdayChanged) {
+        for (int day = 1; day <= month.getEndOfMonth(); day++) {
+            Nickname candidate;
+            if (isWeekend(dayOfWeek, month, day)) {
+                candidate = schedules.getWeekendSchedule().pollFirst();
+                weekendChanged = putSchedule(candidate, schedules.getWeekendSchedule(), weekendChanged);
+                addResult(month, dayOfWeek, day, oncallResults);
+                dayOfWeek = getNextDayOfweek(dayOfWeek);
+                continue;
+            }
+            candidate = schedules.getWeekdaySchedule().pollFirst();
+            weekdayChanged = putSchedule(candidate, schedules.getWeekdaySchedule(), weekdayChanged);
+            addResult(month, dayOfWeek, day, oncallResults);
+            dayOfWeek = getNextDayOfweek(dayOfWeek);
         }
-        candidate = schedules.getWeekdaySchedule().pollFirst();
-        process(candidate, schedules.getWeekdaySchedule());
     }
 
-    private void process(Nickname candidate, Schedule schedules) {
+    private boolean putSchedule(Nickname candidate, Schedule schedule, boolean isChanged) {
         if (isDuplicated(monthlySchedule, candidate)) {
-            processDuplicated(schedules, candidate);
-            return;
+            return processDuplicated(schedule, candidate);
         }
-        processDefaultWay(schedules, candidate);
+        if (isChanged) {
+            return processWhenChanged(candidate, schedule);
+        }
+        return processDefaultWay(schedule, candidate);
     }
 
-    private void processDuplicated(Schedule schedule, Nickname candidate) {
+    private boolean processDuplicated(Schedule schedule, Nickname candidate) {
         Nickname next = schedule.pollFirst();
         schedule.addLast(next);
         schedule.addFirst(candidate);
         monthlySchedule.add(next);
+        return true;
     }
 
-    private void processDefaultWay(Schedule schedule, Nickname candidate) {
+    private boolean processWhenChanged(Nickname candidate, Schedule schedule) {
+        Nickname changedNickname = schedule.pollLast();
+        schedule.addLast(candidate);
+        schedule.addLast(changedNickname);
+        monthlySchedule.add(candidate);
+        return false;
+    }
+
+    private boolean processDefaultWay(Schedule schedule, Nickname candidate) {
         schedule.addLast(candidate);
         monthlySchedule.add(candidate);
+        return false;
     }
 
     private boolean isDuplicated(List<Nickname> schedule, Nickname candidate) {

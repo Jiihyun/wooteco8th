@@ -65,4 +65,8 @@ public class Schedule {
     public void addLast(Nickname nickname) {
         nicknames.addLast(nickname);
     }
+
+    public Nickname pollLast() {
+        return nicknames.pollLast();
+    }
 }
