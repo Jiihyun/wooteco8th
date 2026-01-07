@@ -42,7 +42,7 @@ public class ScheduleProcessor {
                 }
             }
             boolean isHoliday = isHoliday(dayOfWeek, month, day);
-            oncallResults.add(new OncallResult(month.getValue(), day, dayOfWeek.name(), isHoliday, candidate.getValue()));
+            oncallResults.add(new OncallResult(month.getValue(), day, dayOfWeek.name(), isHoliday, schedule.getLast().getValue()));
             dayOfWeek = getNextDayOfweek(dayOfWeek);
         }
         return oncallResults;
