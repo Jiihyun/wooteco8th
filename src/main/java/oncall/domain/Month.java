@@ -33,4 +33,12 @@ public enum Month {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MONTH_NOT_FOUND.getMessage()));
     }
+
+    public int getValue() {
+        return value;
+    }
+
+    public int getEndOfMonth() {
+        return endOfMonth;
+    }
 }

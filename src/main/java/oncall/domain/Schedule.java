@@ -1,5 +1,7 @@
 package oncall.domain;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import oncall.exception.ExceptionMessage;
 
@@ -8,7 +10,7 @@ public class Schedule {
     private static final int MIN_SIZE = 5;
     private static final int MAX_SIZE = 35;
 
-    private final List<Nickname> nicknames;
+    private final Deque<Nickname> nicknames;
 
     public Schedule(List<String> nicknames) {
         validate(nicknames);
@@ -42,13 +44,25 @@ public class Schedule {
                 .count() != nicknames.size();
     }
 
-    private List<Nickname> createNicknames(List<String> nicknames) {
-        return nicknames.stream()
+    private Deque<Nickname> createNicknames(List<String> nicknames) {
+        return new ArrayDeque<>(nicknames.stream()
                 .map(Nickname::new)
-                .toList();
+                .toList());
     }
 
     public int getSize() {
         return nicknames.size();
+    }
+
+    public Nickname pollFirst() {
+        return nicknames.pollFirst();
+    }
+
+    public void addFirst(Nickname nickname) {
+        nicknames.addFirst(nickname);
+    }
+
+    public void addLast(Nickname nickname) {
+        nicknames.addLast(nickname);
     }
 }

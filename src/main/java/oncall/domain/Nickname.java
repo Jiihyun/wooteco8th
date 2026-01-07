@@ -1,5 +1,6 @@
 package oncall.domain;
 
+import java.util.Objects;
 import oncall.exception.ExceptionMessage;
 
 public class Nickname {
@@ -26,5 +27,19 @@ public class Nickname {
 
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof Nickname nickname)) {
+            return false;
+        }
+
+        return Objects.equals(getValue(), nickname.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getValue());
     }
 }

@@ -18,4 +18,13 @@ public class MonthlySchedule {
             throw new IllegalArgumentException(ExceptionMessage.INVALID_SCHEDULE_SIZE.getMessage());
         }
     }
+
+
+    public Schedule getWeekdaySchedule() {
+        return weekdaySchedule;
+    }
+
+    public Schedule getWeekendSchedule() {
+        return weekendSchedule;
+    }
 }
