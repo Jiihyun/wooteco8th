@@ -7,49 +7,62 @@ import oncall.dto.OncallResult;
 public class ScheduleProcessor {
 
     private final Schedules schedules;
+    private final List<Nickname> monthlySchedule;
 
     public ScheduleProcessor(Schedules schedules) {
         this.schedules = schedules;
+        this.monthlySchedule = new ArrayList<>();
     }
 
     public List<OncallResult> process(Month month, DayOfWeek startDayOfWeek) {
-        List<Nickname> schedule = new ArrayList<>();
         List<OncallResult> oncallResults = new ArrayList<>();
         DayOfWeek dayOfWeek = startDayOfWeek;
         for (int day = 1; day <= month.getEndOfMonth(); day++) {
-            Nickname candidate;
-            if (isWeekend(dayOfWeek, month, day)) {
-                candidate = schedules.getWeekendSchedule().pollFirst();
-                if (isDuplicated(schedule, candidate)) {
-                    Nickname next = schedules.getWeekendSchedule().pollFirst();
-                    schedules.getWeekendSchedule().addLast(next);
-                    schedules.getWeekendSchedule().addFirst(candidate);
-                    schedule.add(next);
-                } else {
-                    schedules.getWeekendSchedule().addLast(candidate);
-                    schedule.add(candidate);
-                }
-            } else {
-                candidate = schedules.getWeekdaySchedule().pollFirst();
-                if (isDuplicated(schedule, candidate)) {
-                    Nickname next = schedules.getWeekdaySchedule().pollFirst();
-                    schedules.getWeekdaySchedule().addLast(next);
-                    schedules.getWeekdaySchedule().addFirst(candidate);
-                    schedule.add(next);
-                } else {
-                    schedules.getWeekdaySchedule().addLast(candidate);
-                    schedule.add(candidate);
-                }
-            }
-            boolean isHoliday = isHoliday(dayOfWeek, month, day);
-            oncallResults.add(new OncallResult(month.getValue(), day, dayOfWeek.name(), isHoliday, schedule.getLast().getValue()));
+            putSchedule(month, dayOfWeek, day);
+            addResult(month, dayOfWeek, day, oncallResults);
             dayOfWeek = getNextDayOfweek(dayOfWeek);
         }
         return oncallResults;
     }
 
+    private void putSchedule(Month month, DayOfWeek dayOfWeek, int day) {
+        Nickname candidate;
+        if (isWeekend(dayOfWeek, month, day)) {
+            candidate = schedules.getWeekendSchedule().pollFirst();
+            process(candidate, schedules.getWeekendSchedule());
+            return;
+        }
+        candidate = schedules.getWeekdaySchedule().pollFirst();
+        process(candidate, schedules.getWeekdaySchedule());
+    }
+
+    private void process(Nickname candidate, Schedule schedules) {
+        if (isDuplicated(monthlySchedule, candidate)) {
+            processDuplicated(schedules, candidate);
+            return;
+        }
+        processDefaultWay(schedules, candidate);
+    }
+
+    private void processDuplicated(Schedule schedule, Nickname candidate) {
+        Nickname next = schedule.pollFirst();
+        schedule.addLast(next);
+        schedule.addFirst(candidate);
+        monthlySchedule.add(next);
+    }
+
+    private void processDefaultWay(Schedule schedule, Nickname candidate) {
+        schedule.addLast(candidate);
+        monthlySchedule.add(candidate);
+    }
+
     private boolean isDuplicated(List<Nickname> schedule, Nickname candidate) {
         return !schedule.isEmpty() && schedule.getLast().equals(candidate);
+    }
+
+    private void addResult(Month month, DayOfWeek dayOfWeek, int day, List<OncallResult> oncallResults) {
+        boolean isHoliday = isHoliday(dayOfWeek, month, day);
+        oncallResults.add(new OncallResult(month.getValue(), day, dayOfWeek.name(), isHoliday, monthlySchedule.getLast().getValue()));
     }
 
     private DayOfWeek getNextDayOfweek(DayOfWeek dayOfWeek) {

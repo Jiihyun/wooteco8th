@@ -19,7 +19,6 @@ public class Schedules {
         }
     }
 
-
     public Schedule getWeekdaySchedule() {
         return weekdaySchedule;
     }
