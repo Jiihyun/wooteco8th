@@ -28,4 +28,8 @@ public final class OutputView {
                 oncallResult.dayOfWeek(),
                 oncallResult.nickname()));
     }
+
+    public static void showError(String message) {
+        System.out.println(message);
+    }
 }
