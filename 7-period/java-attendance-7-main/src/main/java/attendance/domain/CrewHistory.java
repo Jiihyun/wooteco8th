@@ -1,14 +1,21 @@
 package attendance.domain;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CrewHistory {
 
-    private final List<Attendance> attendances;
-    private final Expulsion expulsion;
+    private final Map<Integer, Attendance> crewHistory;
 
-    public CrewHistory(List<Attendance> attendances, Expulsion expulsion) {
-        this.attendances = attendances;
-        this.expulsion = expulsion;
+    public CrewHistory() {
+        this.crewHistory = new HashMap<>();
+    }
+
+    public void add(int day, Attendance attendance) {
+        crewHistory.put(day, attendance);
+    }
+
+    public boolean containsHistoryOfDay(int day) {
+        return crewHistory.containsKey(day);
     }
 }

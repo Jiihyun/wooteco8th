@@ -5,26 +5,16 @@ import java.time.LocalDateTime;
 
 public class Attendance {
 
-    private String nickname;
     private LocalDateTime dateTime;
     private AttendanceState attendanceState;
 
-    public Attendance(String nickname, LocalDateTime dateTime, AttendanceState attendanceState) {
-        this.nickname = nickname;
+    public Attendance(LocalDateTime dateTime, AttendanceState attendanceState) {
         this.dateTime = dateTime;
         this.attendanceState = attendanceState;
     }
 
-    public boolean hasSameNickname(String nickname) {
-        return this.nickname.equals(nickname);
-    }
-
     public void editAttendanceState(AttendanceState attendanceState) {
         this.attendanceState = attendanceState;
-    }
-
-    public String getNickname() {
-        return nickname;
     }
 
     public LocalDateTime getDateTime() {
@@ -35,10 +25,10 @@ public class Attendance {
         return dateTime.getDayOfMonth();
     }
 
-    public boolean exists(String nickname, LocalDateTime dateTime) {
-        return this.nickname.equals(nickname)
-                && this.hasSameDay(dateTime.getDayOfMonth());
-    }
+//    public boolean exists(String nickname, LocalDateTime dateTime) {
+//        return this.nickname.equals(nickname)
+//                && this.hasSameDay(dateTime.getDayOfMonth());
+//    }
 
     public void editDateTime(LocalDateTime dateTime) {
         if (isFuture(dateTime)) {
