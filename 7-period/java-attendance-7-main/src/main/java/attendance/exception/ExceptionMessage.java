@@ -27,7 +27,7 @@ public enum ExceptionMessage {
         return message;
     }
 
-    public String getFormattedMessage(int day, String dayOfWeek) {
-        return message.formatted(day, dayOfWeek);
+    public String getFormattedMessage(Object... args) {
+        return message.formatted(args);
     }
 }
