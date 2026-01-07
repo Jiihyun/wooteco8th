@@ -2,12 +2,12 @@ package oncall.domain;
 
 import oncall.exception.ExceptionMessage;
 
-public class MonthlySchedule {
+public class Schedules {
 
     private final Schedule weekdaySchedule;
     private final Schedule weekendSchedule;
 
-    public MonthlySchedule(Schedule weekdaySchedule, Schedule weekendSchedule) {
+    public Schedules(Schedule weekdaySchedule, Schedule weekendSchedule) {
         validateSize(weekdaySchedule, weekendSchedule);
         this.weekdaySchedule = weekdaySchedule;
         this.weekendSchedule = weekendSchedule;

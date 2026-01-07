@@ -1,9 +1,9 @@
 package oncall.controller;
 
 import java.util.List;
-import oncall.domain.MonthlySchedule;
 import oncall.domain.Schedule;
 import oncall.domain.ScheduleProcessor;
+import oncall.domain.Schedules;
 import oncall.dto.OncallRequest;
 import oncall.dto.OncallResult;
 import oncall.util.RetryHandler;
@@ -23,7 +23,7 @@ public class OncallController {
     private ScheduleProcessor createScheduleProcessor() {
         Schedule weekdaySchedule = RetryHandler.retryOnInvalidInput(() -> new Schedule(InputView.readWeekdaySchedule()));
         Schedule weekendSchedule = new Schedule(InputView.readWeekendSchedule());
-        MonthlySchedule monthlySchedule = new MonthlySchedule(weekdaySchedule, weekendSchedule);
-        return new ScheduleProcessor(monthlySchedule);
+        Schedules schedules = new Schedules(weekdaySchedule, weekendSchedule);
+        return new ScheduleProcessor(schedules);
     }
 }

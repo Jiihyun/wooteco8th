@@ -6,10 +6,10 @@ import oncall.dto.OncallResult;
 
 public class ScheduleProcessor {
 
-    private final MonthlySchedule monthlySchedule;
+    private final Schedules schedules;
 
-    public ScheduleProcessor(MonthlySchedule monthlySchedule) {
-        this.monthlySchedule = monthlySchedule;
+    public ScheduleProcessor(Schedules schedules) {
+        this.schedules = schedules;
     }
 
     public List<OncallResult> process(Month month, DayOfWeek startDayOfWeek) {
@@ -19,25 +19,25 @@ public class ScheduleProcessor {
         for (int day = 1; day <= month.getEndOfMonth(); day++) {
             Nickname candidate;
             if (isWeekend(dayOfWeek, month, day)) {
-                candidate = monthlySchedule.getWeekendSchedule().pollFirst();
+                candidate = schedules.getWeekendSchedule().pollFirst();
                 if (isDuplicated(schedule, candidate)) {
-                    Nickname next = monthlySchedule.getWeekendSchedule().pollFirst();
-                    monthlySchedule.getWeekendSchedule().addLast(next);
-                    monthlySchedule.getWeekendSchedule().addFirst(candidate);
+                    Nickname next = schedules.getWeekendSchedule().pollFirst();
+                    schedules.getWeekendSchedule().addLast(next);
+                    schedules.getWeekendSchedule().addFirst(candidate);
                     schedule.add(next);
                 } else {
-                    monthlySchedule.getWeekendSchedule().addLast(candidate);
+                    schedules.getWeekendSchedule().addLast(candidate);
                     schedule.add(candidate);
                 }
             } else {
-                candidate = monthlySchedule.getWeekdaySchedule().pollFirst();
+                candidate = schedules.getWeekdaySchedule().pollFirst();
                 if (isDuplicated(schedule, candidate)) {
-                    Nickname next = monthlySchedule.getWeekdaySchedule().pollFirst();
-                    monthlySchedule.getWeekdaySchedule().addLast(next);
-                    monthlySchedule.getWeekdaySchedule().addFirst(candidate);
+                    Nickname next = schedules.getWeekdaySchedule().pollFirst();
+                    schedules.getWeekdaySchedule().addLast(next);
+                    schedules.getWeekdaySchedule().addFirst(candidate);
                     schedule.add(next);
                 } else {
-                    monthlySchedule.getWeekdaySchedule().addLast(candidate);
+                    schedules.getWeekdaySchedule().addLast(candidate);
                     schedule.add(candidate);
                 }
             }
