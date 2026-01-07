@@ -5,17 +5,35 @@ import oncall.exception.ExceptionMessage;
 
 public class Schedule {
 
+    private static final int MIN_SIZE = 5;
+    private static final int MAX_SIZE = 35;
+
     private final List<Nickname> nicknames;
 
     public Schedule(List<String> nicknames) {
-        validateUnique(nicknames);
+        validate(nicknames);
         this.nicknames = createNicknames(nicknames);
+    }
+
+    private void validate(List<String> nicknames) {
+        validateUnique(nicknames);
+        validateSize(nicknames);
     }
 
     private void validateUnique(List<String> nicknames) {
         if (isDuplicated(nicknames)) {
             throw new IllegalArgumentException(ExceptionMessage.DUPLICATED_NICKNAME.getMessage());
         }
+    }
+
+    private void validateSize(List<String> nicknames) {
+        if (isOutOfRange(nicknames.size())) {
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_SCHEDULE_RANGE.getMessage());
+        }
+    }
+
+    private boolean isOutOfRange(int number) {
+        return number < MIN_SIZE || number > MAX_SIZE;
     }
 
     private boolean isDuplicated(List<String> nicknames) {
