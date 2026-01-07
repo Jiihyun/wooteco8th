@@ -26,21 +26,32 @@ public class AttendanceProcessor {
         this.attendanceHistory = attendanceHistory;
     }
 
+    public void validateNickname(String nickname) {
+        if (attendanceHistory.notContainsNickname(nickname)) {
+            throw new IllegalArgumentException(ExceptionMessage.NICKNAME_NOT_FOUND.getMessage());
+        }
+    }
+
+    public void validateRunningTime(LocalTime time) {
+        if (isNotCampusRunningTime(time)) {
+            throw new IllegalArgumentException(ExceptionMessage.CAMPUS_CLOSED_TIME.getMessage());
+        }
+    }
+
+    private boolean isNotCampusRunningTime(LocalTime time) {
+        return time.isBefore(LocalTime.of(8, 0))
+                || time.isAfter(LocalTime.of(23, 0));
+    }
+
     public AttendanceResult checkAttendance(String nickname, LocalTime time) {
         LocalDateTime dateTime = LocalDateTime.of(dateOfToday, time);
         if (attendanceHistory.containsAttendance(nickname, dateTime)) {
             throw new IllegalArgumentException(ExceptionMessage.HISTORY_ALREADY_EXISTS.getMessage());
         }
-        validateRunningTime(dateTime);
+        validateRunningTime(time);
         Attendance attendance = new Attendance(nickname, dateTime, AttendanceState.of(isMonday(dateTime), dateTime));
         attendanceHistory.put(attendance);
         return new AttendanceResult(dateTime, attendance.getAttendanceState());
-    }
-
-    public void validateNickname(String nickname) {
-        if (!attendanceHistory.containsNickname(nickname)) {
-            throw new IllegalArgumentException(ExceptionMessage.NICKNAME_NOT_FOUND.getMessage());
-        }
     }
 
     public void validateWeekDay(LocalDate date) {
@@ -58,24 +69,12 @@ public class AttendanceProcessor {
                 && date.getDayOfMonth() != CHRISTMAS_DAY;
     }
 
-    private void validateRunningTime(LocalDateTime dateTime) {
-        if (isNotCampusRunningTime(dateTime)) {
-            throw new IllegalArgumentException(ExceptionMessage.CAMPUS_CLOSED_TIME.getMessage());
-        }
-    }
-
-    private boolean isNotCampusRunningTime(LocalDateTime time) {
-        LocalTime now = LocalTime.of(time.getHour(), time.getMinute());
-        return now.isBefore(LocalTime.of(8, 0))
-                || now.isAfter(LocalTime.of(23, 0));
-    }
-
     private boolean isMonday(LocalDateTime localDateTime) {
         return DayOfWeek.MONDAY == localDateTime.getDayOfWeek();
     }
 
     public EditResult editAttendance(String nickname, LocalDateTime afterDateTime) {
-        validateRunningTime(afterDateTime);
+        validateRunningTime(afterDateTime.toLocalTime());
         Attendance attendance = attendanceHistory.findAttendance(nickname, afterDateTime.getDayOfMonth());
         LocalDateTime beforeDateTime = attendance.getDateTime();
         AttendanceState beforeAttendanceState = attendance.getAttendanceState();

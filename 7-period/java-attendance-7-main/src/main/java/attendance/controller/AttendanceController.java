@@ -45,11 +45,22 @@ public class AttendanceController {
     }
 
     private void checkAttendance(AttendanceProcessor attendanceProcessor) {
-        String nickname = InputView.readNickname();
-        attendanceProcessor.validateNickname(nickname);
-        LocalTime time = InputView.readArrivedTime();
+        String nickname = readNickname(attendanceProcessor);
+        LocalTime time = readTime(attendanceProcessor);
         AttendanceResult attendanceResult = attendanceProcessor.checkAttendance(nickname, time);
         OutputView.showCheckedAttendance(attendanceResult);
+    }
+
+    private String readNickname(AttendanceProcessor attendanceProcessor) {
+        String nickname = InputView.readNickname();
+        attendanceProcessor.validateNickname(nickname);
+        return nickname;
+    }
+
+    private LocalTime readTime(AttendanceProcessor attendanceProcessor) {
+        LocalTime time = InputView.readArrivedTime();
+        attendanceProcessor.validateRunningTime(time);
+        return time;
     }
 
     private void editAttendance(AttendanceProcessor attendanceProcessor) {
