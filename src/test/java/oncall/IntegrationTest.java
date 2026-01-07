@@ -104,6 +104,55 @@ class IntegrationTest extends NsTest {
         });
     }
 
+    @Test
+    void 주말_평일_연속_근무() {
+        assertSimpleTest(() -> {
+            runException("4,토",
+                    "쥬니,말랑,허브,헤나,다코",
+                    "허브,쥬니,말랑,다코,헤나"
+            );
+            assertThat(output()).contains(
+                    "4월 1일 토 허브" + LINE_SEPARATOR,
+                    "4월 2일 일 쥬니" + LINE_SEPARATOR,
+                    "4월 3일 월 말랑" + LINE_SEPARATOR,
+                    "4월 4일 화 쥬니" + LINE_SEPARATOR,
+                    "4월 5일 수 허브" + LINE_SEPARATOR,
+                    "4월 6일 목 헤나" + LINE_SEPARATOR,
+                    "4월 7일 금 다코" + LINE_SEPARATOR,
+                    "4월 8일 토 말랑" + LINE_SEPARATOR,
+                    "4월 9일 일 다코" + LINE_SEPARATOR,
+                    "4월 10일 월 쥬니" + LINE_SEPARATOR,
+                    "4월 11일 화 말랑" + LINE_SEPARATOR
+            );
+        });
+    }
+
+    @Test
+    void 공휴일_평일_연속_근무() {
+        assertSimpleTest(() -> {
+            runException("1,수",
+                    "허브,말랑,쥬니,헤나,다코",
+                    "허브,쥬니,말랑,다코,헤나"
+            );
+            assertThat(output()).contains(
+                    "1월 1일 수(휴일) 허브" + LINE_SEPARATOR,
+                    "1월 2일 목 말랑" + LINE_SEPARATOR,
+                    "1월 3일 금 허브" + LINE_SEPARATOR,
+                    "1월 4일 토 쥬니" + LINE_SEPARATOR,
+                    "1월 5일 일 말랑" + LINE_SEPARATOR,
+                    "1월 6일 월 쥬니" + LINE_SEPARATOR,
+                    "1월 7일 화 헤나" + LINE_SEPARATOR,
+                    "1월 8일 수 다코" + LINE_SEPARATOR,
+                    "1월 9일 목 허브" + LINE_SEPARATOR,
+                    "1월 10일 금 말랑" + LINE_SEPARATOR,
+                    "1월 11일 토 다코" + LINE_SEPARATOR,
+                    "1월 12일 일 헤나" + LINE_SEPARATOR,
+                    "1월 13일 월 쥬니" + LINE_SEPARATOR,
+                    "1월 14일 화 헤나" + LINE_SEPARATOR
+            );
+        });
+    }
+
     @Override
     protected void runMain() {
         Application.main(new String[]{});
