@@ -10,15 +10,16 @@ public enum Expulsion {
     NONE(0),
     ;
 
-    private final int maxNoshowCount;
+    private final int absentThreshold;
 
-    Expulsion(int maxNoshowCount) {
-        this.maxNoshowCount = maxNoshowCount;
+    Expulsion(int absentThreshold) {
+        this.absentThreshold = absentThreshold;
     }
 
-    public static Expulsion from(int maxNoshowCount) {
+    public static Expulsion from(int absentThreshold) {
         return Arrays.stream(Expulsion.values())
-                .filter(element -> element.maxNoshowCount <= maxNoshowCount)
+                .sorted(((o1, o2) -> o2.absentThreshold - o1.absentThreshold))
+                .filter(element -> element.absentThreshold <= absentThreshold)
                 .findFirst()
                 .orElse(NONE);
     }
