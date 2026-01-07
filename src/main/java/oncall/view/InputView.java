@@ -19,6 +19,16 @@ public final class InputView {
         return OncallRequest.of(Parser.parseToInt(token.getFirst()), token.getLast());
     }
 
+    public static List<String> readWeekdaySchedule() {
+        System.out.print("평일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
+        return Parser.parseByDelimiter(readLine(), DELIMITER);
+    }
+
+    public static List<String> readWeekendSchedule() {
+        System.out.print("휴일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
+        return Parser.parseByDelimiter(readLine(), DELIMITER);
+    }
+
     private static String readLine() {
         String input = Console.readLine().strip();
         validateInput(input);
