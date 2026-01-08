@@ -19,6 +19,14 @@ public class Pairs {
         pairs.getLast().addLastCrew(lastCrew);
     }
 
+    public void clear() {
+        pairs.clear();
+    }
+
+    public boolean isEmpty() {
+        return pairs.isEmpty();
+    }
+
     public List<Pair> getPairs() {
         return pairs;
     }

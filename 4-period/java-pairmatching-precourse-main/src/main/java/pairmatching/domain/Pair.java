@@ -2,6 +2,7 @@ package pairmatching.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class Pair {
@@ -18,5 +19,19 @@ public class Pair {
 
     public List<String> getPair() {
         return pair;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof Pair pair1)) {
+            return false;
+        }
+
+        return new HashSet<>(getPair()).equals(new HashSet<>(pair1.getPair()));
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashSet<>(getPair()).hashCode();
     }
 }
