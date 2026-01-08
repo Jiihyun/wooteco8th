@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import attendance.dto.AttendanceResult;
+import attendance.dto.CrewAttendanceResult;
 import attendance.dto.EditedResult;
 import attendance.exception.ExceptionMessage;
 import java.time.DayOfWeek;
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public class AttendanceProcessor {
@@ -72,28 +74,27 @@ public class AttendanceProcessor {
         attendanceHistory.edit(attendance, afterDateTime);
         return new EditedResult(beforeDateTime, beforeAttendanceState, afterDateTime, attendance.getAttendanceState());
     }
-//
-//    public ShowResult showAttendance(String nickname) {
-//        attendanceHistory.putNoShowOfNickname(nickname, dateOfToday);
-//        List<Attendance> attendances = attendanceHistory.findAllByNicknameAndDay(nickname, dateOfToday);
-//        int lateCount = countAttendanceState(attendances, AttendanceState.지각);
-//        int noshowCount = countAttendanceState(attendances, AttendanceState.결석);
-//        noshowCount += lateCount / 3;
-//
-//        return new ShowResult(
-//                attendances,
-//                countAttendanceState(attendances, AttendanceState.출석),
-//                countAttendanceState(attendances, AttendanceState.지각),
-//                countAttendanceState(attendances, AttendanceState.결석),
-//                Expulsion.from(noshowCount)
-//        );
-//    }
-//
-//    private int countAttendanceState(List<Attendance> attendances, AttendanceState state) {
-//        return (int) attendances.stream()
-//                .filter(attendance -> attendance.getAttendanceState() == state)
-//                .count();
-//    }
+
+    public CrewAttendanceResult showAllAttendanceByCrew(String nickname) {
+        List<Attendance> allAttendance = attendanceHistory.findCrewHistoryByNickname(nickname, dateOfToday);
+        int lateCount = countAttendanceState(allAttendance, AttendanceState.지각);
+        int absenceCount = countAttendanceState(allAttendance, AttendanceState.결석);
+        absenceCount += lateCount / 3;
+
+        return new CrewAttendanceResult(
+                allAttendance,
+                countAttendanceState(allAttendance, AttendanceState.출석),
+                countAttendanceState(allAttendance, AttendanceState.지각),
+                countAttendanceState(allAttendance, AttendanceState.결석),
+                Expulsion.from(absenceCount)
+        );
+    }
+
+    private int countAttendanceState(List<Attendance> attendances, AttendanceState state) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.getAttendanceState() == state)
+                .count();
+    }
 //
 //    public List<ShowResult> findExpulsionCrews() {
 //        List<ShowResult> results = new ArrayList<>();

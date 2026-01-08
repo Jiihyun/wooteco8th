@@ -3,6 +3,7 @@ package attendance.domain;
 import attendance.exception.ExceptionMessage;
 import attendance.util.FileReader;
 import attendance.util.Parser;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -69,38 +70,15 @@ public class AttendanceHistory {
         attendance.editAttendanceState(AttendanceState.from(dateTime));
     }
 
-//    public void putNoShowOfNickname(String nickname, LocalDate date) {
-//        for (int day = 1; day < date.getDayOfMonth(); day++) {
-//            if (!hasAttendanceByDay(findAllByNicknameAndDay(nickname, date), day) && isWeekDay(day)) {
-//                histories.add(new Attendance(
-//                        nickname,
-//                        LocalDateTime.of(
-//                                LocalDate.of(2024, 12, day),
-//                                LocalTime.MIN),
-//                        AttendanceState.결석));
-//            }
-//        }
-//    }
-//
-//    private boolean hasAttendanceByDay(List<Attendance> attendances, int day) {
-//        return attendances.stream()
-//                .anyMatch(attendance -> attendance.hasSameDay(day));
-//    }
-//
-//    private boolean isWeekDay(int day) {
-//        DayOfWeek dayOfWeek = LocalDate.of(2024, 12, day).getDayOfWeek();
-//        return dayOfWeek != DayOfWeek.SATURDAY
-//                && dayOfWeek != DayOfWeek.SUNDAY
-//                && day != AttendanceProcessor.CHRISTMAS_DAY;
-//    }
-//
-//    public List<Attendance> findAllByNicknameAndDay(String nickname, LocalDate dateOfToday) {
-//        return new ArrayList<>(histories.stream()
-//                .filter(attendance -> attendance.hasSameNickname(nickname))
-//                .filter(attendance -> attendance.getDayOfMonth() < dateOfToday.getDayOfMonth())
-//                .toList());
-//    }
-//
+    public List<Attendance> findCrewHistoryByNickname(String nickname, LocalDate dateOfToday) {
+        if (notContainsNickname(nickname)) {
+            throw new IllegalArgumentException(ExceptionMessage.NICKNAME_NOT_FOUND.getMessage());
+        }
+        CrewHistory crewHistory = histories.get(nickname);
+        crewHistory.putAbsence(dateOfToday);
+        return crewHistory.getAllAttendance();
+    }
+
 //    public Set<String> findAllNames() {
 //        return histories.stream()
 //                .map(Attendance::getNickname)

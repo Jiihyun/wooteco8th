@@ -4,10 +4,10 @@ import attendance.domain.Attendance;
 import attendance.domain.Expulsion;
 import java.util.List;
 
-public record ShowResult(
+public record CrewAttendanceResult(
         List<Attendance> attendances,
-        int attendance,
-        int lateness,
-        int noShow,
+        int attendanceCount,
+        int lateCount,
+        int absentCount,
         Expulsion expulsion) {
 }

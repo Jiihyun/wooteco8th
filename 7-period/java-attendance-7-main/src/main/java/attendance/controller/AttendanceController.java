@@ -4,6 +4,7 @@ import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceProcessor;
 import attendance.domain.command.Command;
 import attendance.dto.AttendanceResult;
+import attendance.dto.CrewAttendanceResult;
 import attendance.dto.EditedResult;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -34,9 +35,9 @@ public class AttendanceController {
         if (command.isEditAttendance()) {
             editAttendance(attendanceProcessor);
         }
-//        if (command.isCheckAttendancePerCrew()) {
-//            showAttendance(attendanceProcessor);
-//        }
+        if (command.isCheckAttendancePerCrew()) {
+            showAllAttendanceByCrew(attendanceProcessor);
+        }
 //        if (command.isCheckExpulsion()) {
 //            showExpulsion(attendanceProcessor);
 //        }
@@ -80,12 +81,12 @@ public class AttendanceController {
         attendanceProcessor.validateRunningTime(time);
         return LocalDateTime.of(date, time);
     }
-//
-//    private void showAttendance(AttendanceProcessor attendanceProcessor) {
-//        String nickname = InputView.readNickname();
-//        ShowResult showResult = attendanceProcessor.showAttendance(nickname);
-//        OutputView.showResult(nickname, showResult);
-//    }
+
+    private void showAllAttendanceByCrew(AttendanceProcessor attendanceProcessor) {
+        String nickname = InputView.readNickname();
+        CrewAttendanceResult crewAttendanceResult = attendanceProcessor.showAllAttendanceByCrew(nickname);
+        OutputView.showAllAttendanceByCrew(nickname, crewAttendanceResult);
+    }
 //
 //    private void showExpulsion(AttendanceProcessor attendanceProcessor) {
 //        List<ShowResult> results = attendanceProcessor.findExpulsionCrews();
