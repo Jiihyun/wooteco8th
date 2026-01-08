@@ -20,4 +20,8 @@ public final class OutputView {
     public static void showClear() {
         System.out.println("초기화 되었습니다.");
     }
+
+    public static void showError(String message) {
+        System.out.println(message);
+    }
 }
