@@ -3,12 +3,14 @@ package attendance.domain;
 import attendance.dto.AttendanceResult;
 import attendance.dto.CrewAttendanceResult;
 import attendance.dto.EditedResult;
+import attendance.dto.ExpulsionResult;
 import attendance.exception.ExceptionMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -84,26 +86,30 @@ public class AttendanceProcessor {
         return new CrewAttendanceResult(
                 allAttendance,
                 countAttendanceState(allAttendance, AttendanceState.출석),
-                countAttendanceState(allAttendance, AttendanceState.지각),
+                lateCount,
                 countAttendanceState(allAttendance, AttendanceState.결석),
                 Expulsion.from(absenceCount)
         );
     }
 
-    private int countAttendanceState(List<Attendance> attendances, AttendanceState state) {
+    public int countAttendanceState(List<Attendance> attendances, AttendanceState state) {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.getAttendanceState() == state)
                 .count();
     }
-//
-//    public List<ShowResult> findExpulsionCrews() {
-//        List<ShowResult> results = new ArrayList<>();
-//        for (String nickname : attendanceHistory.findAllNames()) {
-//            ShowResult showResult = showAttendance(nickname);
-//            if (showResult.expulsion() != Expulsion.NONE) {
-//                results.add(showResult);
-//            }
-//        }
-//        return results;
-//    }
+
+    public List<ExpulsionResult> findExpulsionCrews() {
+        List<ExpulsionResult> results = new ArrayList<>();
+        for (String nickname : attendanceHistory.findAllNames()) {
+            CrewAttendanceResult crewAttendanceResult = showAllAttendanceByCrew(nickname);
+            if (crewAttendanceResult.expulsion() != Expulsion.NONE) {
+                results.add(
+                        new ExpulsionResult(nickname, crewAttendanceResult.lateCount(),
+                                crewAttendanceResult.absentCount(), crewAttendanceResult.expulsion()
+                        )
+                );
+            }
+        }
+        return results;
+    }
 }

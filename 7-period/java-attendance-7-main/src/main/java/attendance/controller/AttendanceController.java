@@ -6,12 +6,14 @@ import attendance.domain.command.Command;
 import attendance.dto.AttendanceResult;
 import attendance.dto.CrewAttendanceResult;
 import attendance.dto.EditedResult;
+import attendance.dto.ExpulsionResult;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public class AttendanceController {
 
@@ -38,9 +40,9 @@ public class AttendanceController {
         if (command.isCheckAttendancePerCrew()) {
             showAllAttendanceByCrew(attendanceProcessor);
         }
-//        if (command.isCheckExpulsion()) {
-//            showExpulsion(attendanceProcessor);
-//        }
+        if (command.isCheckExpulsion()) {
+            showExpulsionCrew(attendanceProcessor);
+        }
     }
 
     private void checkAttendance(AttendanceProcessor attendanceProcessor) {
@@ -87,9 +89,9 @@ public class AttendanceController {
         CrewAttendanceResult crewAttendanceResult = attendanceProcessor.showAllAttendanceByCrew(nickname);
         OutputView.showAllAttendanceByCrew(nickname, crewAttendanceResult);
     }
-//
-//    private void showExpulsion(AttendanceProcessor attendanceProcessor) {
-//        List<ShowResult> results = attendanceProcessor.findExpulsionCrews();
-//        OutputView.showExplusion(results);
-//    }
+
+    private void showExpulsionCrew(AttendanceProcessor attendanceProcessor) {
+        List<ExpulsionResult> results = attendanceProcessor.findExpulsionCrews();
+        OutputView.showExpulsion(results);
+    }
 }

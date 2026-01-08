@@ -49,7 +49,10 @@ public class CrewHistory {
                 && date.getDayOfMonth() != CHRISTMAS_DAY;
     }
 
-    public List<Attendance> getAllAttendance() {
-        return crewHistory.values().stream().toList();
+    public List<Attendance> getAttendanceUntilDate(LocalDate dateOfToday) {
+        int today = dateOfToday.getDayOfMonth();
+        return crewHistory.values().stream()
+                .filter(attendance -> attendance.getDayOfMonth() < today)
+                .toList();
     }
 }

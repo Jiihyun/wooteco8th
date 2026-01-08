@@ -5,6 +5,7 @@ import attendance.domain.Expulsion;
 import attendance.dto.AttendanceResult;
 import attendance.dto.CrewAttendanceResult;
 import attendance.dto.EditedResult;
+import attendance.dto.ExpulsionResult;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -25,6 +26,7 @@ public final class OutputView {
             결석: %d회
             """;
     private static final String ATTENDANCE_RESULT_FORMAT = NEW_LINE + "%s 대상자입니다.";
+    private static final String EXPULSION_RESULT_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)";
 
     private OutputView() {
     }
@@ -82,27 +84,23 @@ public final class OutputView {
             System.out.println(ATTENDANCE_RESULT_FORMAT.formatted(crewAttendanceResult.expulsion().name()));
         }
     }
-//
-//    public static void showExplusion(List<ShowResult> results) {
-//        System.out.println("제적 위험자 조회 결과" + NEW_LINE);
-//        String format = "- %s: 결석 %d회, 지각 %d회 (%s)";
-//        results.sort(
-//                Comparator.comparing(ShowResult::expulsion)
-//                        .thenComparing(
-//                                ShowResult::absentCount,
-//                                Comparator.reverseOrder()
-//                        )
-//                        .thenComparing(
-//                                ShowResult::lateCount,
-//                                Comparator.reverseOrder()
-//                        )
-//                        .thenComparing(
-//                                result -> result.attendances().getFirst().getNickname()
-//                        )
-//        );
-//        for (ShowResult result : results) {
-//            System.out.println(format.formatted(result.attendances().getFirst().getNickname(),
-//                    result.absentCount(), result.lateCount(), result.expulsion().name()));
-//        }
-//    }
+
+    public static void showExpulsion(List<ExpulsionResult> expulsionResult) {
+        System.out.println("제적 위험자 조회 결과" + NEW_LINE);
+        sortResult(expulsionResult);
+
+        expulsionResult.stream()
+                .map(result -> EXPULSION_RESULT_FORMAT.formatted(result.nickname(), result.absenceCount(),
+                        result.lateCount(), result.expulsion().name()))
+                .forEach(System.out::println);
+    }
+
+    private static void sortResult(List<ExpulsionResult> expulsionResult) {
+        expulsionResult.sort(
+                Comparator.comparing(ExpulsionResult::expulsion)
+                        .thenComparing(ExpulsionResult::absenceCount, Comparator.reverseOrder())
+                        .thenComparing(ExpulsionResult::lateCount, Comparator.reverseOrder())
+                        .thenComparing(ExpulsionResult::nickname)
+        );
+    }
 }

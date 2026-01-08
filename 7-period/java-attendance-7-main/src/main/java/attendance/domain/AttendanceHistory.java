@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AttendanceHistory {
 
@@ -76,12 +77,10 @@ public class AttendanceHistory {
         }
         CrewHistory crewHistory = histories.get(nickname);
         crewHistory.putAbsence(dateOfToday);
-        return crewHistory.getAllAttendance();
+        return crewHistory.getAttendanceUntilDate(dateOfToday);
     }
 
-//    public Set<String> findAllNames() {
-//        return histories.stream()
-//                .map(Attendance::getNickname)
-//                .collect(Collectors.toSet());
-//    }
+    public Set<String> findAllNames() {
+        return histories.keySet();
+    }
 }
