@@ -27,9 +27,17 @@ public class PairHistory {
     }
 
     public Pairs findByPairInfo(PairInfo pairInfo) {
-        if (!histories.containsKey(pairInfo)) {
+        if (!containsKey(pairInfo)) {
             throw new IllegalArgumentException(ExceptionMessage.PAIR_NOT_FOUND.getMessage());
         }
         return histories.get(pairInfo);
+    }
+
+    public boolean containsKey(PairInfo pairInfo) {
+        return histories.containsKey(pairInfo);
+    }
+
+    public void clear() {
+        histories.clear();
     }
 }

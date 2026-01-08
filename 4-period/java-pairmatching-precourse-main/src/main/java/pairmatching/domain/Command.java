@@ -5,7 +5,10 @@ import pairmatching.exception.ExceptionMessage;
 
 public enum Command {
 
-    MATCHING("페어 매칭", "1"),
+    MATCH("페어 매칭", "1"),
+    SEARCH("페어 조회", "2"),
+    CLEAR("페어 초기화", "3"),
+    QUIT("종료", "Q"),
     ;
 
     private final String description;

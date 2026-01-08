@@ -14,6 +14,10 @@ public class MatchingProcessor {
         this.pairHistory = pairHistory;
     }
 
+    public boolean isMatched(PairInfo pairInfo) {
+        return pairHistory.containsKey(pairInfo);
+    }
+
     public Pairs process(PairInfo pairInfo) {
         List<String> crews = readCrews(pairInfo.getCourse());
         Pairs pairs = new Pairs();
@@ -49,5 +53,9 @@ public class MatchingProcessor {
 
     public Pairs searchPairsByPairInfo(PairInfo pairInfo) {
         return pairHistory.findByPairInfo(pairInfo);
+    }
+
+    public void clear() {
+        pairHistory.clear();
     }
 }

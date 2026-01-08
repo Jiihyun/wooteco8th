@@ -3,6 +3,7 @@ package pairmatching.view;
 import camp.nextstep.edu.missionutils.Console;
 import java.util.List;
 import pairmatching.domain.Command;
+import pairmatching.domain.RematchCommand;
 import pairmatching.dto.PairInfoRequest;
 import pairmatching.exception.ExceptionMessage;
 import pairmatching.util.Parser;
@@ -43,6 +44,13 @@ public final class InputView {
         System.out.println(READ_PAIR_INFO_MESSAGE);
         List<String> token = Parser.parseByDelimiter(readLine(), INFO_DELIMITER);
         return PairInfoRequest.of(token.getFirst(), token.get(1), token.getLast());
+    }
+
+    public static RematchCommand readRematch() {
+        System.out.println("""
+                매칭 정보가 있습니다. 다시 매칭하시겠습니까?
+                네 | 아니오""");
+        return RematchCommand.from(readLine());
     }
 
     private static String readLine() {
