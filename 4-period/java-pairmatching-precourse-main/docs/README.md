@@ -2,7 +2,7 @@
 
 ## 입력 기능
 
-- [] 페어 매칭에 필요한 크루들 이름이 있는 파일 입력 `src/main/resources/backend-crew.md`
+- [x] 페어 매칭에 필요한 크루들 이름이 있는 파일 입력 `src/main/resources/backend-crew.md`
 
 - [x] 기능 명령어 입력
     - [x] 공백일 경우 예외 발생시키기
