@@ -8,6 +8,7 @@ public enum ExceptionMessage {
     COURSE_NOT_FOUND("존재하지 않는 과정입니다."),
     LEVEL_NOT_FOUND("존재하지 않는 레벨입니다."),
     MISSION_NOT_FOUND("존재하지 않는 미션입니다."),
+    PAIR_NOT_FOUND("매칭 이력이 없습니다."),
     CANNOT_MATCH("매칭을 진행할 수 없습니다."),
     ;
 

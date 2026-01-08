@@ -46,4 +46,8 @@ public class MatchingProcessor {
         }
         return FileReader.readFrontend();
     }
+
+    public Pairs searchPairsByPairInfo(PairInfo pairInfo) {
+        return pairHistory.findByPairInfo(pairInfo);
+    }
 }
