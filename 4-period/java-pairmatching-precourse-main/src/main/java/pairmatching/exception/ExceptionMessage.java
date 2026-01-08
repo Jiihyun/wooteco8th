@@ -3,10 +3,12 @@ package pairmatching.exception;
 public enum ExceptionMessage {
 
     INPUT_BLANK("빈 값을 입력하셨습니다."),
-    INVALID_NUMBER("유효하지 않은 숫자입니다."),
     INVALID_FORMAT("유효하지 않은 형식입니다."),
     INVALID_RANGE("유효하지 않은 범위입니다."),
     COMMAND_NOT_FOUND("존재하지 않는 명령어입니다."),
+    COURSE_NOT_FOUND("존재하지 않는 과정입니다."),
+    LEVEL_NOT_FOUND("존재하지 않는 레벨입니다."),
+    MISSION_NOT_FOUND("존재하지 않는 미션입니다."),
     DUPLICATED("중복된 oo입니다."),
     ;
 
