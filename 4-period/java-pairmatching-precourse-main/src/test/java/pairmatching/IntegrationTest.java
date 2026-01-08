@@ -13,13 +13,13 @@ class IntegrationTest extends NsTest {
     private static final String ERROR_MESSAGE = "[ERROR]";
 
     @Test
-    void 홀수_인원_페어_매칭() {
+    void 짝수_인원_페어_매칭() {
         assertShuffleTest(
                 () -> {
                     run("1", "백엔드, 레벨1, 자동차경주", "Q");
-                    assertThat(output()).contains("태웅 : 백호", "치수 : 태섭 : 한나");
+                    assertThat(output()).contains("태웅 : 백호", "치수 : 태섭", "한나 : 준호");
                 },
-                Arrays.asList("태웅", "백호", "치수", "태섭", "한나")
+                Arrays.asList("태웅", "백호", "치수", "태섭", "한나", "준호")
         );
     }
 
@@ -29,7 +29,7 @@ class IntegrationTest extends NsTest {
                 () -> assertThatThrownBy(() -> run("1", "백엔드, 레벨1, 자동차경주", "1", "백엔드, 레벨1, 로또"))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessageContaining(ERROR_MESSAGE),
-    
+
                 Arrays.asList("태웅", "백호", "치수", "태섭", "한나"),
                 Arrays.asList("백호", "태웅", "태섭", "한나", "치수"),
                 Arrays.asList("백호", "태웅", "태섭", "한나", "치수"),
