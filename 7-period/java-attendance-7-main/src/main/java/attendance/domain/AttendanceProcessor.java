@@ -1,0 +1,111 @@
+package attendance.domain;
+
+import attendance.dto.AttendanceResult;
+import attendance.dto.CrewAttendanceResult;
+import attendance.dto.EditedResult;
+import attendance.dto.ExpulsionResult;
+import attendance.exception.ExceptionMessage;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+public class AttendanceProcessor {
+
+    public static final int CHRISTMAS_DAY = 25;
+
+    private final LocalDate dateOfToday;
+    private final AttendanceHistory attendanceHistory;
+
+    public AttendanceProcessor(LocalDate dateOfToday, AttendanceHistory attendanceHistory) {
+        validateWeekDay(dateOfToday);
+        this.dateOfToday = dateOfToday;
+        this.attendanceHistory = attendanceHistory;
+    }
+
+    public void validateWeekDay(LocalDate date) {
+        if (isWeekend(date)) {
+            throw new IllegalArgumentException(ExceptionMessage.CANNOT_ATTENDANCE.getFormattedMessage(
+                    date.getDayOfMonth(),
+                    date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+        }
+    }
+
+    private boolean isWeekend(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY
+                || dayOfWeek == DayOfWeek.SUNDAY
+                || date.getDayOfMonth() == CHRISTMAS_DAY;
+    }
+
+    public void validateNickname(String nickname) {
+        if (attendanceHistory.notContainsNickname(nickname)) {
+            throw new IllegalArgumentException(ExceptionMessage.NICKNAME_NOT_FOUND.getMessage());
+        }
+    }
+
+    public void validateRunningTime(LocalTime time) {
+        if (isNotCampusRunningTime(time)) {
+            throw new IllegalArgumentException(ExceptionMessage.CAMPUS_CLOSED_TIME.getMessage());
+        }
+    }
+
+    private boolean isNotCampusRunningTime(LocalTime time) {
+        return time.isBefore(LocalTime.of(8, 0))
+                || time.isAfter(LocalTime.of(23, 0));
+    }
+
+    public AttendanceResult checkAttendance(String nickname, LocalTime time) {
+        LocalDateTime dateTime = LocalDateTime.of(dateOfToday, time);
+        if (attendanceHistory.containsHistory(nickname, dateTime.getDayOfMonth())) {
+            throw new IllegalArgumentException(ExceptionMessage.HISTORY_ALREADY_EXISTS.getMessage());
+        }
+        AttendanceState attendanceState = AttendanceState.from(dateTime);
+        attendanceHistory.put(nickname, dateTime, attendanceState);
+        return new AttendanceResult(dateTime, attendanceState);
+    }
+
+    public EditedResult editAttendance(String nickname, LocalDateTime afterDateTime) {
+        Attendance attendance = attendanceHistory.findAttendanceByDayOfMonth(nickname, afterDateTime.getDayOfMonth());
+        LocalDateTime beforeDateTime = attendance.getDateTime();
+        AttendanceState beforeAttendanceState = attendance.getAttendanceState();
+        attendanceHistory.edit(attendance, afterDateTime);
+        return new EditedResult(beforeDateTime, beforeAttendanceState, afterDateTime, attendance.getAttendanceState());
+    }
+
+    public CrewAttendanceResult showAllAttendanceByCrew(String nickname) {
+        List<Attendance> allAttendance = attendanceHistory.findCrewHistoryByNickname(nickname, dateOfToday);
+        int attendanceCount = countAttendanceState(allAttendance, AttendanceState.출석);
+        int lateCount = countAttendanceState(allAttendance, AttendanceState.지각);
+        int absenceCount = countAttendanceState(allAttendance, AttendanceState.결석);
+        return new CrewAttendanceResult(allAttendance,
+                attendanceCount, lateCount, absenceCount,
+                Expulsion.from(absenceCount, lateCount)
+        );
+    }
+
+    public int countAttendanceState(List<Attendance> attendances, AttendanceState state) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.getAttendanceState() == state)
+                .count();
+    }
+
+    public List<ExpulsionResult> findExpulsionCrews() {
+        List<ExpulsionResult> results = new ArrayList<>();
+        for (String nickname : attendanceHistory.findAllNames()) {
+            CrewAttendanceResult crewAttendanceResult = showAllAttendanceByCrew(nickname);
+            if (crewAttendanceResult.expulsion() != Expulsion.NONE) {
+                results.add(
+                        new ExpulsionResult(nickname, crewAttendanceResult.lateCount(),
+                                crewAttendanceResult.absentCount(), crewAttendanceResult.expulsion()
+                        )
+                );
+            }
+        }
+        return results;
+    }
+}
