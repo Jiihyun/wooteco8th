@@ -27,6 +27,10 @@ public class Pairs {
         return pairs.isEmpty();
     }
 
+    public boolean isFull(int crewSize) {
+        return pairs.size() == crewSize;
+    }
+
     public List<Pair> getPairs() {
         return pairs;
     }

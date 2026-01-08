@@ -25,9 +25,7 @@ public final class FileReader {
 
     private static List<String> readLines(String path) {
         try {
-            List<String> allLines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
-            allLines.removeFirst();
-            return allLines;
+            return Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
         } catch (IOException ioException) {
             throw new IllegalStateException(ExceptionMessage.CANNOT_READ_FILE.getMessage(), ioException);
         }

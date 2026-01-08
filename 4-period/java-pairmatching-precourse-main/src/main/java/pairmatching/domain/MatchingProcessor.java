@@ -23,22 +23,26 @@ public class MatchingProcessor {
         Pairs pairs = new Pairs();
         List<Pair> historyByLevel = pairHistory.findByLevel(pairInfo.getLevel());
         for (int tryCount = 0; tryCount < 3; tryCount++) {
-            List<String> shuffledCrews = Randoms.shuffle(crews);
+            crews = Randoms.shuffle(crews);
             pairs.clear();
-            for (int i = 0; i < shuffledCrews.size() - 1; i += 2) {
-                String crew1 = shuffledCrews.get(i);
-                String crew2 = shuffledCrews.get(i + 1);
+            for (int i = 0; i < crews.size() - 1; i += 2) {
+                String crew1 = crews.get(i);
+                String crew2 = crews.get(i + 1);
                 Pair pair = new Pair(crew1, crew2);
-                if (!historyByLevel.contains(pair)) {
-                    pairs.add(pair);
+                if (historyByLevel.contains(pair)) {
+                    break;
                 }
+                pairs.add(pair);
             }
-            if (shuffledCrews.size() % 2 != 0) {
-                pairs.addLastCrew(shuffledCrews.getLast());
+            if (pairs.isFull(crews.size() / 2)) {
+                break;
             }
         }
         if (pairs.isEmpty()) {
             throw new IllegalArgumentException(ExceptionMessage.CANNOT_MATCH.getMessage());
+        }
+        if (crews.size() % 2 != 0) {
+            pairs.addLastCrew(crews.getLast());
         }
         pairHistory.put(pairInfo, pairs);
         return pairs;
