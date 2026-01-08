@@ -18,7 +18,13 @@ public class PairHistory {
         histories.put(pairInfo, pairs);
     }
 
-    public List<Pair> findByLevel(Level level) {
+    public boolean containsPairByLevel(Pairs pairs, Level level) {
+        List<Pair> history = findByLevel(level);
+        return pairs.getPairs().stream()
+                .anyMatch(history::contains);
+    }
+
+    private List<Pair> findByLevel(Level level) {
         return histories.entrySet().stream()
                 .filter(entry -> entry.getKey().getLevel() == level)
                 .map(Map.Entry::getValue)
