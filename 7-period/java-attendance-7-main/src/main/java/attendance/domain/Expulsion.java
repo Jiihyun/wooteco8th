@@ -16,10 +16,11 @@ public enum Expulsion {
         this.absentThreshold = absentThreshold;
     }
 
-    public static Expulsion from(int absentThreshold) {
+    public static Expulsion from(int absentCount, int lateCount) {
+        int totalAbsentCount = absentCount + lateCount / 3;
         return Arrays.stream(Expulsion.values())
                 .sorted(((o1, o2) -> o2.absentThreshold - o1.absentThreshold))
-                .filter(element -> element.absentThreshold <= absentThreshold)
+                .filter(element -> element.absentThreshold <= totalAbsentCount)
                 .findFirst()
                 .orElse(NONE);
     }

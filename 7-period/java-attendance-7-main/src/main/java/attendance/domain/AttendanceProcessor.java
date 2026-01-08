@@ -79,16 +79,12 @@ public class AttendanceProcessor {
 
     public CrewAttendanceResult showAllAttendanceByCrew(String nickname) {
         List<Attendance> allAttendance = attendanceHistory.findCrewHistoryByNickname(nickname, dateOfToday);
+        int attendanceCount = countAttendanceState(allAttendance, AttendanceState.출석);
         int lateCount = countAttendanceState(allAttendance, AttendanceState.지각);
         int absenceCount = countAttendanceState(allAttendance, AttendanceState.결석);
-        absenceCount += lateCount / 3;
-
-        return new CrewAttendanceResult(
-                allAttendance,
-                countAttendanceState(allAttendance, AttendanceState.출석),
-                lateCount,
-                countAttendanceState(allAttendance, AttendanceState.결석),
-                Expulsion.from(absenceCount)
+        return new CrewAttendanceResult(allAttendance,
+                attendanceCount, lateCount, absenceCount,
+                Expulsion.from(absenceCount, lateCount)
         );
     }
 
