@@ -1,6 +1,7 @@
 package lotto.domain;
 
 import java.util.List;
+import java.util.Map;
 
 public class LottoDrawer {
 
@@ -12,10 +13,11 @@ public class LottoDrawer {
         this.winningLotto = winningLotto;
     }
 
-    public void draw(List<Lotto> purchasedLottos) {
+    public Map<Rank, Integer> draw(List<Lotto> purchasedLottos) {
         for (Lotto purchasedLotto : purchasedLottos) {
             Rank rank = winningLotto.findRank(purchasedLotto);
             rankHistory.put(rank);
         }
+        return rankHistory.getHistories();
     }
 }

@@ -1,6 +1,9 @@
 package lotto.domain;
 
+import static lotto.domain.PurchasedAmount.LOTTO_PRICE;
+
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public class RankHistory {
@@ -23,7 +26,8 @@ public class RankHistory {
         histories.put(rank, histories.get(rank) + 1);
     }
 
-    public double calculateProfit(int purchasedAmount) {
+    public double calculateProfit(List<Lotto> purchasedLottos) {
+        double purchasedAmount = (double) purchasedLottos.size() * LOTTO_PRICE;
         double prizeAmount = 0;
         for (Map.Entry<Rank, Integer> entry : histories.entrySet()) {
             prizeAmount += entry.getKey().calculatePrizeAmount(entry.getValue());

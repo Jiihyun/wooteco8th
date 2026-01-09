@@ -4,7 +4,7 @@ import lotto.exception.ExceptionMessage;
 
 public class PurchasedAmount {
 
-    private static final int MIN_AMOUNT = 1_000;
+    public static final int LOTTO_PRICE = 1_000;
     private static final int MAX_AMOUNT = 100_000;
 
     private final int value;
@@ -20,7 +20,7 @@ public class PurchasedAmount {
     }
 
     private void validateUnit(int purchasedAmount) {
-        if (purchasedAmount % MIN_AMOUNT != 0) {
+        if (purchasedAmount % LOTTO_PRICE != 0) {
             throw new IllegalArgumentException(ExceptionMessage.INVALID_AMOUNT.getMessage());
         }
     }
@@ -32,7 +32,11 @@ public class PurchasedAmount {
     }
 
     private boolean isOutOfRange(int purchasedAmount) {
-        return purchasedAmount < MIN_AMOUNT || purchasedAmount > MAX_AMOUNT;
+        return purchasedAmount < LOTTO_PRICE || purchasedAmount > MAX_AMOUNT;
+    }
+
+    public int calculateLottoQuantity() {
+        return value / LOTTO_PRICE;
     }
 
     public int getValue() {

@@ -5,7 +5,6 @@ import java.util.stream.IntStream;
 
 public class LottoStore {
 
-    private static final int LOTTO_PRICE = 1_000;
 
     private final LottoGenerator lottoGenerator;
 
@@ -14,8 +13,7 @@ public class LottoStore {
     }
 
     public List<Lotto> sellLotto(PurchasedAmount purchasedAmount) {
-        //TODO: 게터 리팩토링
-        int lottoQuantity = purchasedAmount.getValue() / LOTTO_PRICE;
+        int lottoQuantity = purchasedAmount.calculateLottoQuantity();
         return IntStream.range(0, lottoQuantity)
                 .mapToObj(i -> lottoGenerator.generate())
                 .map(Lotto::new)
