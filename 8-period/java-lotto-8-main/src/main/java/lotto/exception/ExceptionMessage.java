@@ -10,7 +10,8 @@ public enum ExceptionMessage {
     _NOT_FOUND("존재하지 않는 oo입니다."),
     _ALREADY_EXISTS("oo가 이미 존재합니다."),
     DUPLICATED("중복된 oo입니다."),
-    ;
+
+    INVALID_AMOUNT("구매 불가능한 금액입니다.");
 
     private static final String ERROR_PREFIX = "[ERROR] ";
 
