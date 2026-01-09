@@ -10,7 +10,7 @@ public enum ExceptionMessage {
     INVALID_LOTTO_SIZE("로또 번호는 6개여야 합니다."),
     _NOT_FOUND("존재하지 않는 oo입니다."),
     _ALREADY_EXISTS("oo가 이미 존재합니다."),
-    DUPLICATED("중복된 oo입니다."),
+    DUPLICATED_NUMBER("중복된 로또 번호입니다."),
 
     INVALID_AMOUNT("구매 불가능한 금액입니다.");
 

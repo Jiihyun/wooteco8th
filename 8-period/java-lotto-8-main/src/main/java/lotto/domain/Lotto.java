@@ -17,9 +17,26 @@ public class Lotto {
     }
 
     private void validate(List<Integer> numbers) {
+        validateSize(numbers);
+        validatUniqueNumber(numbers);
+    }
+
+    private void validateSize(List<Integer> numbers) {
         if (numbers.size() != LOTTO_SIZE) {
             throw new IllegalArgumentException(ExceptionMessage.INVALID_LOTTO_SIZE.getMessage());
         }
+    }
+
+    public void validatUniqueNumber(List<Integer> numbers) {
+        if (isDuplicated(numbers)) {
+            throw new IllegalArgumentException(ExceptionMessage.DUPLICATED_NUMBER.getMessage());
+        }
+    }
+
+    private boolean isDuplicated(List<Integer> numbers) {
+        return numbers.stream()
+                .distinct()
+                .count() != numbers.size();
     }
 
     public List<Integer> getNumbers() {
