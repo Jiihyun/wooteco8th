@@ -39,9 +39,19 @@ public class Lotto {
                 .count() != numbers.size();
     }
 
+    public int calculateSameNumber(Lotto other) {
+        return (int) this.numbers.stream()
+                .filter(other::hasSameNumber)
+                .count();
+    }
+
     public List<Integer> getNumbers() {
         return numbers.stream()
                 .map(LottoNumber::getValue)
                 .toList();
+    }
+
+    public boolean hasSameNumber(LottoNumber bonusNumber) {
+        return numbers.contains(bonusNumber);
     }
 }

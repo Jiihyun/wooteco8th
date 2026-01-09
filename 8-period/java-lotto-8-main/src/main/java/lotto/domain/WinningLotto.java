@@ -19,4 +19,10 @@ public class WinningLotto {
             throw new IllegalArgumentException(ExceptionMessage.DUPLICATED_NUMBER.getMessage());
         }
     }
+
+    public Rank findRank(Lotto purchasedLotto) {
+        int matchingCount = purchasedLotto.calculateSameNumber(winningNumber);
+        boolean hasBonusNumber = purchasedLotto.hasSameNumber(bonusNumber);
+        return Rank.of(matchingCount, hasBonusNumber);
+    }
 }
