@@ -38,4 +38,8 @@ public final class OutputView {
                 profitRate
         ));
     }
+
+    public static void showError(String message) {
+        System.out.println(message);
+    }
 }

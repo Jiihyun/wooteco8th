@@ -8,6 +8,7 @@ import lotto.util.Parser;
 public final class InputView {
 
     private static final String DELIMITER = ",";
+    private static final String NEW_LINE = System.lineSeparator();
 
     private InputView() {
     }
@@ -18,7 +19,7 @@ public final class InputView {
     }
 
     public static List<Integer> readWinningNumber() {
-        System.out.println("당첨 번호를 입력해 주세요.");
+        System.out.println(NEW_LINE + "당첨 번호를 입력해 주세요.");
         List<String> input = Parser.parseByDelimiter(readLine(), DELIMITER);
         return input.stream()
                 .map(Parser::parseToInt)
@@ -26,7 +27,7 @@ public final class InputView {
     }
 
     public static int readBonusNumber() {
-        System.out.println("보너스 번호를 입력해 주세요.");
+        System.out.println(NEW_LINE + "보너스 번호를 입력해 주세요.");
         return Parser.parseToInt(readLine());
     }
 
