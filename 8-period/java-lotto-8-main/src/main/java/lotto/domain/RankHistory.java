@@ -23,6 +23,14 @@ public class RankHistory {
         histories.put(rank, histories.get(rank) + 1);
     }
 
+    public double calculateProfit(int purchasedAmount) {
+        double prizeAmount = 0;
+        for (Map.Entry<Rank, Integer> entry : histories.entrySet()) {
+            prizeAmount += entry.getKey().calculatePrizeAmount(entry.getValue());
+        }
+        return prizeAmount / purchasedAmount * 100;
+    }
+
     public Map<Rank, Integer> getHistories() {
         return histories;
     }
